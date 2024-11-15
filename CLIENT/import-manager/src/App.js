@@ -1,9 +1,9 @@
-import RegisterRetainedProduct from "./components/view/RegisterRetainedProduct";
+import LoginView from "./components/view/LoginView";
 
 function App() {
   return (
     <div>
-      <RegisterRetainedProduct />
+      <LoginView />
     </div>
   );
 }

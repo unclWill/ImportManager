@@ -63,16 +63,12 @@ body {
   background-color: #1351b4;
 }
 
-.container > img {
-  position: absolute;
-  top: 0;
-}
-
 .title {
   font-family: "Abhaya Libre", serif;
   color: #ffffff;
   font-size: 4rem;
   font-weight: bold;
+  margin-top: 0px;
 }
 
 .title-register {
@@ -103,101 +99,133 @@ body {
   border-width: 2px;
 }
 
+.register-product-buttons-cadastro {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+div > a {
+  color: #ffffff;
+  font-weight: bold;
+}
 
 /* RetainedProductsView */
 .logo {
-    position: absolute; 
-    top: 10px;
-    left: 0px; 
-    width: 220px; 
-    height: auto;
-  }
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  width: 220px;
+  height: auto;
+}
 
 .retained-products-view {
-    background: #1351b4;
-    padding: 15px;
-    border-radius: 20px;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
-    width: 75%;
-    margin: 50px auto 20px;
-  }
+  background: #1351b4;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+  width: 75%;
+  margin: 50px auto 20px;
+}
 
-  .retained-products-view h2 {
-    color: #fff;
-    text-align: center;
-    font-size: 32px;
-    margin-bottom: 30px;
-  }
+.retained-products-view h2 {
+  color: #fff;
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 30px;
+}
 
-  .search-container {
-    display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    margin-bottom: 30px; /* Espaço abaixo do campo de busca */
-  }
-  
-  
-  .search-bar {
-    padding: 12px;
-    width: 74%;
-    margin-bottom: 30px;
-    border-radius: 10px;
-    border: 3px solid #0f5dab; 
-    font-size: 16px;
-    outline: none;
-  }
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
 
-  .search-bar:focus {
-    border-color: #ff8800; 
-  }
-  
-  .product-list {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-  }
-  
-  .product-item {
-    background-color: #fff; 
-    margin-bottom: 20px;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 70%; 
-    transition: transform 0.3s ease;
-    text-align: center;
-  }
-  
-  .product-item:hover {
-    transform: scale(1.1); 
-  }
-  
-  .product-item h3 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: bold;
-    color: #0f5dab; 
-  }
-  
-  .product-item p {
-    margin: 5px 0;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .status {
-    font-weight: bold;
-    padding: 2px 5px;
-    border-radius: 5px;
-  }
-  
-  .status.retido {
-    background-color: #ff8800; 
-    color: white;
-  }
-  
-  .status.liberado {
-    background-color: #32cd32; 
-    color: white;
-  }
+.search-bar {
+  padding: 12px;
+  width: 74%;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  border: 3px solid #0f5dab;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-bar:focus {
+  border-color: #ff8800;
+}
+
+.product-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-item {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 70%;
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.product-item:hover {
+  transform: scale(1.1);
+}
+
+.product-item h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+  color: #0f5dab;
+}
+
+.product-item p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.status {
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+
+.status.retido {
+  background-color: #ff8800;
+  color: white;
+}
+
+.status.liberado {
+  background-color: #32cd32;
+  color: white;
+}
+
+/*RegisterRetainedProduct.js*/
+
+.register-product-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  gap: 10px;
+  background-color: #1351b4;
+}
+
+.register-product-container > img {
+  position: absolute;
+  top: 0;
+}
+
+div > Button {
+  font-weight: bold;
+}
