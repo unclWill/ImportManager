@@ -1,5 +1,11 @@
+import RegisterView from "./components/view/RegisterView";
+
 function App() {
-  return <div className="App"></div>;
+  return (
+    <div>
+      <RegisterView />
+    </div>
+  );
 }
 
 export default App;
