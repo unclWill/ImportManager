@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/styles.css";
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const RetainedProductsView = () => {
   
@@ -22,7 +24,14 @@ const RetainedProductsView = () => {
     <div className="retained-products-view">
       <img src="/leao.png" alt="Logo" className="logo" />
       <h2>Produtos Retidos</h2>
-      <input type="text" placeholder="Buscar produto..." className="search-bar" />
+      <div className="search-container">
+        <Input
+            className="search-bar"
+            size="large"
+            placeholder="Buscar produto..."
+            prefix={<SearchOutlined />}
+        />
+      </div>
 
       <ul className="product-list">
         {products.map((product) => (
