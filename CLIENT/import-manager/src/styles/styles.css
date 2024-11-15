@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Oswald:wght@200..700&display=swap");
 
 * {
-  max-width: 100%;
+  max-width: 100vw;
 }
 
 body {
@@ -9,6 +9,47 @@ body {
   padding: 0;
   width: 100vw;
   height: 100vh;
+  background-color: #1351b4;
+  color: #333;
+}
+
+.register-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: #1351b4;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 40vw;
+}
+
+.register-form > label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+}
+
+.buttons-cadastro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.logo-img-register {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .container {
@@ -34,6 +75,13 @@ body {
   font-weight: bold;
 }
 
+.title-register {
+  font-family: "Abhaya Libre", serif;
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
@@ -54,3 +102,102 @@ body {
   border-color: #000000;
   border-width: 2px;
 }
+
+
+/* RetainedProductsView */
+.logo {
+    position: absolute; 
+    top: 10px;
+    left: 0px; 
+    width: 220px; 
+    height: auto;
+  }
+
+.retained-products-view {
+    background: #1351b4;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+    width: 75%;
+    margin: 50px auto 20px;
+  }
+
+  .retained-products-view h2 {
+    color: #fff;
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    margin-bottom: 30px; /* Espaço abaixo do campo de busca */
+  }
+  
+  
+  .search-bar {
+    padding: 12px;
+    width: 74%;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 3px solid #0f5dab; 
+    font-size: 16px;
+    outline: none;
+  }
+
+  .search-bar:focus {
+    border-color: #ff8800; 
+  }
+  
+  .product-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  }
+  
+  .product-item {
+    background-color: #fff; 
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 70%; 
+    transition: transform 0.3s ease;
+    text-align: center;
+  }
+  
+  .product-item:hover {
+    transform: scale(1.1); 
+  }
+  
+  .product-item h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: #0f5dab; 
+  }
+  
+  .product-item p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .status {
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 5px;
+  }
+  
+  .status.retido {
+    background-color: #ff8800; 
+    color: white;
+  }
+  
+  .status.liberado {
+    background-color: #32cd32; 
+    color: white;
+  }
