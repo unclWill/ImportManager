@@ -59,6 +59,7 @@ export default function RegisterView() {
           <>
             <label>CNPJ</label>
             <Input
+              className=".input"
               size="middle"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
@@ -68,6 +69,7 @@ export default function RegisterView() {
           <>
             <label>CPF</label>
             <Input
+              className=".input"
               size="middle"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
@@ -77,7 +79,7 @@ export default function RegisterView() {
 
         <Checkbox onChange={handleCheckboxChange}>Pessoa Jurídica</Checkbox>
       </div>
-      <div className="buttons-cadastro">
+      <div className="register-product-buttons-cadastro">
         <a>Fazer Login</a>
         <Button
           type="primary"

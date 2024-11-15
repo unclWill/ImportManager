@@ -1,6 +1,7 @@
 import { CheckSquareFilled, PlusOutlined } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import React from "react";
+import "../../styles/styles.css";
 
 export default function RegisterRetainedProduct() {
   const { TextArea } = Input;
@@ -9,12 +10,9 @@ export default function RegisterRetainedProduct() {
     console.log("Change:", e.target.value);
   };
   return (
-    <div className="container">
-      <div className="header">
-        <img src={"/leao.png"} alt="Logo InvestManager" className="logo-img" />
-        <h1 className="title">Cadastre o Produto</h1>
-      </div>
+    <div className="register-product-container">
       <div className="login-form">
+        <h1 className="title">Cadastre o Produto</h1>
         <label>Nome do Produto</label>
         <Input
           className="input"
