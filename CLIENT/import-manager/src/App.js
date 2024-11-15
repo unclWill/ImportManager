@@ -1,9 +1,10 @@
 import LoginView from "./components/view/LoginView";
+import RegisterView from "./components/view/RegisterView";
 
 function App() {
   return (
     <div>
-      <LoginView />
+      <RegisterView />
     </div>
   );
 }
