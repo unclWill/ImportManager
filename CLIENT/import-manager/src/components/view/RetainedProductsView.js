@@ -12,14 +12,6 @@ const RetainedProductsView = () => {
     { id: 4, name: "Produto D", description: "Descrição do produto D", quantity: 20, status: "Retido" }
   ]);
 
-  
-  /*useEffect(() => {
-     fetch('/api/produtos-retidos')
-       .then(response => response.json())
-       .then(data => setProducts(data))
-       .catch(error => console.error('Erro ao buscar produtos:', error));
-  }, []);*/
-
   return (
     <div className="retained-products-view">
       <img src="/leao.png" alt="Logo" className="logo" />
