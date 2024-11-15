@@ -7,6 +7,8 @@ public class StockMovement
     public long Id { get; set; }
     
     public long UserId { get; set; }
+
+    public User User {get; set;}
     
     public long ProductId { get; set; }
     
@@ -14,7 +16,7 @@ public class StockMovement
     
     public int Quantity { get; set; }
     
-    public decimal Price { get; set; }
+    public double TotalPrice { get; set; }
     
     public DateTime MovementDate { get; set; }
     
