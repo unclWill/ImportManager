@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/styles.css";
+import "../../styles/retainedProducts.css";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
