@@ -1,6 +1,6 @@
 ﻿namespace ImportManagerAPI.Models;
 
-public class User
+public class Product
 {
     
 }
