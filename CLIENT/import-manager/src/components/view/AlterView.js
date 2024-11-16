@@ -1,16 +1,24 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input } from "antd";
-import "../../styles/StylesRegister.css";
+import "../../styles/AlterView.css";
 import { useState } from "react";
 
-export default function RegisterView() {
+export default function AlterView() {
   const [isCompany, setIsCompany] = useState(false);
+  const [newUser, setNewUser] = useState({
+    nome: "",
+    sobrenome: "",
+    senha: "",
+    confirmaSenha: "",
+    email: "",
+    doc: "",
+  });
 
   const handleCheckboxChange = (e) => {
     setIsCompany(e.target.checked);
   };
 
-  const handleRegister = () => {};
+  const handleSalvar = () => {};
 
   return (
     <div className="register-container">
@@ -19,7 +27,7 @@ export default function RegisterView() {
         alt="Logo InvestManager"
         className="logo-img-register"
       />
-      <h1 className="title-register">ImportManager</h1>
+      <h1 className="title-register">Alterar Dados do Usuário</h1>
 
       <div className="register-form">
         <label>Nome</label>
@@ -27,12 +35,18 @@ export default function RegisterView() {
           size="middle"
           placeholder="Informe seu Nome"
           prefix={<UserOutlined />}
+          value={newUser.nome}
+          onChange={(n) => setNewUser({ ...newUser, nome: n.target.value })}
         />
         <label>Sobrenome</label>
         <Input
           size="middle"
           placeholder="Informe seu Sobrenome"
           prefix={<UserOutlined />}
+          value={newUser.sobrenome}
+          onChange={(n) =>
+            setNewUser({ ...newUser, sobrenome: n.target.value })
+          }
         />
 
         <label>Senha</label>
@@ -40,12 +54,18 @@ export default function RegisterView() {
           size="middle"
           placeholder="Crie uma Senha"
           prefix={<LockOutlined />}
+          value={newUser.senha}
+          onChange={(n) => setNewUser({ ...newUser, senha: n.target.value })}
         />
         <label>Confirme sua Senha</label>
         <Input.Password
           size="middle"
           placeholder="Confirme sua Senha"
           prefix={<LockOutlined />}
+          value={newUser.confirmaSenha}
+          onChange={(n) =>
+            setNewUser({ ...newUser, confirmaSenha: n.target.value })
+          }
         />
 
         <label>Email</label>
@@ -53,6 +73,8 @@ export default function RegisterView() {
           size="middle"
           placeholder="large size"
           prefix={<UserOutlined />}
+          value={newUser.email}
+          onChange={(n) => setNewUser({ ...newUser, email: n.target.value })}
         />
 
         {isCompany ? (
@@ -63,6 +85,8 @@ export default function RegisterView() {
               size="middle"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
+              value={newUser.doc}
+              onChange={(n) => setNewUser({ ...newUser, doc: n.target.value })}
             />
           </>
         ) : (
@@ -73,20 +97,28 @@ export default function RegisterView() {
               size="middle"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
+              value={newUser.doc}
+              onChange={(n) => setNewUser({ ...newUser, doc: n.target.value })}
             />
           </>
         )}
 
         <Checkbox onChange={handleCheckboxChange}>Pessoa Jurídica</Checkbox>
       </div>
-      <div className="register-product-buttons-cadastro">
-        <a>Fazer Login</a>
+      <div className="buttons-alter">
         <Button
           type="primary"
           size="large"
           style={{ backgroundColor: "#FFA500", borderColor: "#FFA500" }}
         >
-          Cadastrar
+          Salvar
+        </Button>
+        <Button
+          type="primary"
+          size="large"
+          style={{ backgroundColor: "#FFA500", borderColor: "#FFA500" }}
+        >
+          Cancelar
         </Button>
       </div>
     </div>
