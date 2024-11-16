@@ -12,7 +12,10 @@ public class MappingProfile : Profile
         CreateMap<Product, ProductDto>();
         CreateMap<User, UserCreateDto>();
         CreateMap<UserUpdateDto, User>()
-            .ForMember(dest => dest.Password, opt => opt.Condition(src => !string.IsNullOrEmpty(src.Password)));
+            .ForMember(dest => dest.Password, opt 
+                => opt.Condition(src => !string.IsNullOrEmpty(src.Password)));
         CreateMap<UserCreateDto, User>();
+        CreateMap<LoginDto, User>();
+        CreateMap<User, LoginDto>();
     }
 }
