@@ -1,0 +1,66 @@
+.register-product-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  gap: 10px;
+  background-color: #1351b4;
+}
+
+.header-area > img {
+}
+
+.header-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.title {
+  text-align: center;
+  color: #ffffff;
+  font-size: 3rem;
+  margin-top: 0px;
+}
+
+.product-register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-register-form > label {
+  align-self: flex-start;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.product-register-form > .input {
+  min-width: 35vw;
+  height: 50px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-color: #000000;
+  border-width: 2px;
+}
+
+.register-product-buttons-cadastro {
+  display: flex;
+  justify-content: center;
+}
+
+.product-register-select {
+  min-width: 35vw;
+  height: 50px;
+  margin-top: 10px;
+}
+
+.product-register-select .ant-select-selector {
+  height: 50px !important;
+  line-height: 48px !important;
+  border-color: #000000 !important;
+  border-width: 2px !important;
+}
