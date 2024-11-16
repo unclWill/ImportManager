@@ -1,5 +1,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input } from "antd";
+import "../../styles/loginView.css";
 import "../../styles/styles.css";
 import { useState } from "react";
 
@@ -18,6 +19,7 @@ export default function LoginView() {
         {isCompany ? (
           <>
             <Input
+              className="input"
               size="large"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
@@ -26,6 +28,7 @@ export default function LoginView() {
         ) : (
           <>
             <Input
+              className="input"
               size="large"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
@@ -39,14 +42,21 @@ export default function LoginView() {
           placeholder="Digite a sua senha"
           prefix={<LockOutlined />}
         />
+
+        <Checkbox
+          style={{
+            color: "#FFFFFF",
+            fontWeight: "bold",
+            fontSize: 18,
+            alignSelf: "flex-start",
+          }}
+          onChange={handleCheckboxChange}
+        >
+          Pessoa Jurídica
+        </Checkbox>
       </div>
-      <Checkbox
-        style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 18 }}
-        onChange={handleCheckboxChange}
-      >
-        Pessoa Jurídica
-      </Checkbox>
-      <div className="register-product-buttons-cadastro">
+
+      <div className="login-buttons-cadastro">
         <Button
           type="primary"
           size="large"
