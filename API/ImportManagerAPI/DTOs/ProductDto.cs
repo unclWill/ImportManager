@@ -9,6 +9,8 @@ public class ProductDto
     public int Quantity { get; set; }
     
     public decimal Price { get; set; }
+
+    public long CategoryId { get; set; }
     
     public Category Category { get; set; }
 }

@@ -59,6 +59,10 @@ public class Program
         app.UseAuthorization();
         
         app.AddUserEndpoints();
+
+        app.AddProductEndpoints();
+
+        app.AddCategoryEndpoints();
         
         app.MapControllers();
 
