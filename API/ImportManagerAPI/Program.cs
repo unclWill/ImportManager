@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using AutoMapper;
 using ImportManagerAPI.Data;
+using ImportManagerAPI.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImportManagerAPI;
@@ -14,7 +16,7 @@ public class Program
 
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
-            { 
+            {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
         
@@ -26,10 +28,23 @@ public class Program
         // Add services to the container.
         builder.Services.AddAuthorization();
 
+        // Mapeamentos.
+        builder.Services.AddAutoMapper(typeof(MappingProfile));
+        
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
+        
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAllOrigins", corsPolicyBuilder =>
+            {
+                corsPolicyBuilder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -39,9 +54,13 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
         app.UseAuthorization();
+        
+        app.AddUserEndpoints();
+        
+        app.MapControllers();
 
         app.Run();
     }

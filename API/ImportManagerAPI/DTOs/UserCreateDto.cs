@@ -2,40 +2,30 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using ImportManagerAPI.Models.Enums;
 
-namespace ImportManagerAPI.Models;
+namespace ImportManagerAPI.DTOs;
 
-[Table("Users")]
-public class User
+public class UserCreateDto
 {
-    [Key]
-    public long Id { get; set; }
-    
+    [Required]
     [MaxLength(40)]
     public string FirstName { get; set; }
     
+    [Required]
     [MaxLength(40)]
     public string LastName { get; set; }
     
+    [Required]
     [MaxLength(40)]
     public string Password { get; set; }
     
+    [Required]
     [MaxLength(16)]
     public string TaxPayerDocument { get; set; }
     
+    [Required]
     [EmailAddress]
     [StringLength(100)]
     public string Email { get; set; }
 
-    [Column(TypeName = "TEXT")] 
-    public Role Role { get; set; } = Role.TaxPayer;
-
-    public void SetPassword(string password)
-    {
-        Password = BCrypt.Net.BCrypt.HashPassword(password);
-    }
-    
-    public bool ValidatePassword(string password)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, Password);
-    }
+    public Role Role { get; set; }
 }
