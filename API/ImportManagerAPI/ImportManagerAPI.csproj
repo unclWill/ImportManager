@@ -18,7 +18,7 @@
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -29,8 +29,12 @@
     <ItemGroup>
       <Folder Include="Authorization\" />
       <Folder Include="Database\" />
-      <Folder Include="DTOs\" />
-      <Folder Include="Endpoints\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Database\ImportManager.db">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
