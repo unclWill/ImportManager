@@ -61,7 +61,7 @@ export default function RegisterView() {
     navigate("/");
     try {
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 

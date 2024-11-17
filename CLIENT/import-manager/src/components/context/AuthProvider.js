@@ -7,7 +7,9 @@ import { jwtDecode } from "jwt-decode";
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(new User("", "", "", "", ""));
+  const [user, setUser] = useState(
+    new User("", "testando", "111.111.111-11", "", "")
+  );
 
   async function handleLogin(doc, senha, isVitima) {
     try {
