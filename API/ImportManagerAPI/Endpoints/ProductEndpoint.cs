@@ -147,6 +147,7 @@ public static class ProductEndpoint
                     MovementType = MovementType.Entrada,
                     MovementDate = DateTime.UtcNow,
                     TotalPrice = product.Price * product.Quantity,
+                    TaxPayerDocument = productCreateDto.OwnerTaxPayerDocument,
                     IsFinalized = false
                 };
 

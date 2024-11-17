@@ -12,6 +12,8 @@ public class StockMovementCreateDto
     [Required]
     public int Quantity { get; set; }
     
+    public string TaxPayerDocument { get; set; }
+    
     [Required]
     public MovementType MovementType { get; set; }
     

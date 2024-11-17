@@ -182,7 +182,8 @@ public static class StockMovementEndpoint
 
             var movement = mapper.Map<StockMovimentation>(createDto);
             movement.UserId = userId;
-            movement.MovementDate = DateTime.UtcNow;
+            movement.TaxPayerDocument = product.OwnerTaxPayerDocument;
+            movement.MovementDate = DateTime.Now;
 
             movement.TotalPrice = createDto.MovementType == MovementType.Entrada
                 ? createDto.Quantity * createDto.UnitPrice.Value
@@ -201,7 +202,7 @@ public static class StockMovementEndpoint
             {
                 movement.IsFinalized = true;
             }
-            
+
             await db.StockMovimentations.AddAsync(movement);
             await db.SaveChangesAsync();
 
@@ -216,7 +217,7 @@ public static class StockMovementEndpoint
             );
         }
     }
-
+    
     private static async Task<IResult> PutAsync(
         long id,
         [FromBody] StockMovementUpdateDto updateDto,
@@ -243,25 +244,25 @@ public static class StockMovementEndpoint
             {
                 return TypedResults.NotFound("Movimentação não encontrada.");
             }
-            
+
             if (movement.IsFinalized)
             {
                 return TypedResults.BadRequest("Não é possível alterar uma movimentação já finalizada.");
             }
-            
+
             if (updateDto.IsFinalized.HasValue)
             {
                 if (movement.MovementType == MovementType.Entrada && updateDto.IsFinalized.Value)
                 {
                     return TypedResults.BadRequest("Não é possível finalizar movimentações de entrada.");
                 }
-                
+
                 if (movement.MovementType == MovementType.Saida)
                 {
                     movement.IsFinalized = updateDto.IsFinalized.Value;
                 }
             }
-            
+
             if (movement.MovementType == MovementType.Entrada)
             {
                 movement.Product.Quantity -= movement.Quantity;

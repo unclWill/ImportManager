@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ImportManagerAPI.DTOs;
 using ImportManagerAPI.DTOs.Auth;
 using ImportManagerAPI.DTOs.Products;
 using ImportManagerAPI.DTOs.StockMovementations;
@@ -12,7 +11,17 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        /*
+         * Mapeamentos entre as models e suas respectivas DTOs.
+         * O mapeamento mais complexo é o que está sendo feito entre a model do estoque
+         * e as suas DTOs, por conta dos relacionamentos existentes.
+         */
+        
         CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<UserCreateDto, User>();
+        CreateMap<LoginDto, User>();
+        CreateMap<User, LoginDto>();
+        
         CreateMap<ProductCreateDto, Product>();
         CreateMap<Product, ProductDto>()
             .ForMember(dest => dest.OwnerTaxPayerDocument,
@@ -27,27 +36,35 @@ public class MappingProfile : Profile
         CreateMap<UserUpdateDto, User>()
             .ForMember(dest => dest.Password,
                 opt => opt.Condition(src => !string.IsNullOrEmpty(src.Password)));
-                
-        CreateMap<UserCreateDto, User>();
-        CreateMap<LoginDto, User>();
-        CreateMap<User, LoginDto>();
         
+        // Criação de movimentação do estoque.
         CreateMap<StockMovementCreateDto, StockMovimentation>()
-            .ForMember(dest => dest.MovementDate, 
-                opt => opt.MapFrom(src => DateTime.UtcNow))
-            .ForMember(dest => dest.TotalPrice,
-                opt => opt.Ignore());
-
-        CreateMap<StockMovementUpdateDto, StockMovimentation>()
+            .ForMember(dest => dest.IsFinalized, opt => opt.Ignore())
             .ForMember(dest => dest.MovementDate, opt => opt.Ignore())
+            .ForMember(dest => dest.TotalPrice, opt => opt.Ignore())
             .ForMember(dest => dest.UserId, opt => opt.Ignore())
-            .ForMember(dest => dest.ProductId, opt => opt.Ignore())
-            .ForMember(dest => dest.MovementType, opt => opt.Ignore());
+            .ForMember(dest => dest.TaxPayerDocument, opt => opt.Ignore());
 
+        // Atualização de movimentação do estoque.
+        CreateMap<StockMovementUpdateDto, StockMovimentation>()
+            .ForMember(dest => dest.ProductId, opt => opt.Ignore())
+            .ForMember(dest => dest.MovementType, opt => opt.Ignore())
+            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.TaxPayerDocument, opt => opt.Ignore())
+            .ForMember(dest => dest.MovementDate, opt => opt.Ignore());
+
+        // Retorno ao realizar uam movimentação no estoque.
         CreateMap<StockMovimentation, StockMovementResponseDto>()
-            .ForMember(dest => dest.UserName,
-                opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
-            .ForMember(dest => dest.ProductName,
-                opt => opt.MapFrom(src => src.Product.Name));
+            .ForMember(dest => dest.UserName, 
+                opt => opt.MapFrom(src => src.User != null 
+                    ? $"{src.User.FirstName} {src.User.LastName}" 
+                    : string.Empty))
+            .ForMember(dest => dest.ProductName, 
+                opt => opt.MapFrom(src => src.Product != null 
+                    ? src.Product.Name 
+                    : string.Empty))
+            .ForMember(dest => dest.UserId, 
+                opt => opt.MapFrom(src => src.UserId.ToString()));
+        
     }
 }

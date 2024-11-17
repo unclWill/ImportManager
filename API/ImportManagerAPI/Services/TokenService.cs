@@ -43,7 +43,11 @@ public class TokenService
             return new SecurityTokenDescriptor
             {
                 Subject = GenerateClaims(user),
-                Expires = DateTime.UtcNow.AddHours(1),
+                
+                // VALOR DEFINIDO PARA TESTES
+                // Quando em produção deve ser alterado para 1
+                Expires = DateTime.UtcNow.AddHours(24),
+                
                 SigningCredentials = GetCredentials(),
                 Issuer = "ImportManagerAPI",
                 Audience = "ImportManagerAPI"

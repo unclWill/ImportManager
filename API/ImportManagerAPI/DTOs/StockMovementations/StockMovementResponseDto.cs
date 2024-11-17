@@ -10,6 +10,8 @@ public class StockMovementResponseDto
     
     public string UserName { get; set; }
     
+    public string TaxPayerDocument { get; set; }
+    
     public long ProductId { get; set; }
     
     public string ProductName { get; set; }
