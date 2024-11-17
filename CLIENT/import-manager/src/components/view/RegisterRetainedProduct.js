@@ -1,6 +1,6 @@
 import { CheckSquareFilled, PlusOutlined } from "@ant-design/icons";
 import { Button, Flex, Form, Input, Select } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import "../../styles/styles.css";
 import "../../styles/registerRetainedProduct.css";
 

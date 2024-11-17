@@ -63,7 +63,7 @@ export default function RegisterView() {
     registerService(newUser);
     try {
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 

@@ -1,10 +1,14 @@
+import AuthProvider from "./components/context/AuthProvider";
 import RegisterRetainedProduct from "./components/view/RegisterRetainedProduct";
 import RegisterView from "./components/view/RegisterView";
+import RetainedProductsView from "./components/view/RetainedProductsView";
 
 function App() {
   return (
     <div>
-      <RegisterView />
+      <AuthProvider>
+        <RetainedProductsView />
+      </AuthProvider>
     </div>
   );
 }

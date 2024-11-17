@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://35.215.241.37:5000";
+const URL = "http://meister.app.br:5000";
 
 async function loginService(doc, senha, isVitima) {
   const data = {
