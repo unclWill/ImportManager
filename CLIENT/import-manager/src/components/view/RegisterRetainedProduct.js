@@ -1,15 +1,49 @@
 import { CheckSquareFilled, PlusOutlined } from "@ant-design/icons";
 import { Button, Flex, Form, Input, Select } from "antd";
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import "../../styles/styles.css";
 import "../../styles/registerRetainedProduct.css";
+import { registerProductService } from "../service/RegisterProductService";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterRetainedProduct() {
   const { TextArea } = Input;
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    description: "",
+    quantity: "",
+    price: "",
+    category: "",
+    owner: "",
+  });
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     console.log("Change:", e.target.value);
   };
+
+  const handleRegister = () => {
+    if (
+      newProduct.name === "" ||
+      newProduct.description === "" ||
+      newProduct.quantity === "" ||
+      newProduct.price === "" ||
+      newProduct.category === "" ||
+      newProduct.owner === ""
+    ) {
+      alert("Todos os campos devem ser preenchidos!");
+      return;
+    }
+
+    registerProductService(newProduct);
+    alert("Produto cadastrado com sucesso.");
+
+    try {
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div className="register-product-container">
       <div className="header-area">
@@ -23,6 +57,9 @@ export default function RegisterRetainedProduct() {
           size="large"
           placeholder="Digite o nome do produto"
           prefix={<CheckSquareFilled />}
+          onChange={(n) =>
+            setNewProduct({ ...newProduct, name: n.target.value })
+          }
         />
         <label style={{ marginBottom: "10px" }}>Descrição</label>
         <Flex vertical gap={32}>
@@ -30,7 +67,9 @@ export default function RegisterRetainedProduct() {
             className="input"
             showCount
             maxLength={100}
-            onChange={onChange}
+            onChange={(event) =>
+              setNewProduct({ ...newProduct, description: event.target.value })
+            }
             placeholder="Digite a descrição do produto"
             style={{
               height: 80,
@@ -47,6 +86,9 @@ export default function RegisterRetainedProduct() {
           size="large"
           placeholder="Quantidade"
           prefix={<PlusOutlined />}
+          onChange={(n) =>
+            setNewProduct({ ...newProduct, quantity: n.target.value })
+          }
         />
         <label>Preço</label>
         <Input
@@ -54,16 +96,20 @@ export default function RegisterRetainedProduct() {
           size="large"
           placeholder="Preço"
           prefix={<PlusOutlined />}
+          onChange={(n) =>
+            setNewProduct({ ...newProduct, price: n.target.value })
+          }
         />
         <label>Categoria</label>
         <Form.Item>
           <Select
             className="product-register-select"
             placeholder="Selecione uma categoria"
+            onChange={(n) => setNewProduct({ ...newProduct, category: n })}
           >
             <Select.Option value=""></Select.Option>
-            <Select.Option value="Eletrônico">Eletrônico</Select.Option>
-            <Select.Option value="Vestuário">Vestuário</Select.Option>
+            <Select.Option value="Eletronicos">Eletrônicos</Select.Option>
+            <Select.Option value="Vestuario">Vestuário</Select.Option>
           </Select>
         </Form.Item>
         <label>Proprietário do Produto</label>
@@ -72,6 +118,9 @@ export default function RegisterRetainedProduct() {
           size="large"
           placeholder="Digite o CPF do proprietário"
           prefix={<PlusOutlined />}
+          onChange={(n) =>
+            setNewProduct({ ...newProduct, owner: n.target.value })
+          }
         />
         <div className="register-product-buttons-cadastro">
           <Button
@@ -83,6 +132,7 @@ export default function RegisterRetainedProduct() {
               width: "6rem",
               margin: "1rem",
             }}
+            onClick={handleRegister}
           >
             Cadastrar
           </Button>
@@ -95,6 +145,7 @@ export default function RegisterRetainedProduct() {
               width: "6rem",
               margin: "1rem",
             }}
+            onClick={navigate("")}
           >
             Cancelar
           </Button>
