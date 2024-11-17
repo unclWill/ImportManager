@@ -1,11 +1,8 @@
-import RegisterRetainedProduct from "./components/view/RegisterRetainedProduct";
+import React from "react";
+import Navigation from "./components/router/Navigation";
 
 function App() {
-  return (
-    <div>
-      <RegisterRetainedProduct />
-    </div>
-  );
+  return <Navigation></Navigation>;
 }
 
 export default App;
