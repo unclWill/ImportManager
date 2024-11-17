@@ -4,6 +4,7 @@ import "../../styles/StylesRegister.css";
 import { useState } from "react";
 import { registerService } from "../service/AuthService";
 import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterView() {
   const [isCompany, setIsCompany] = useState(false);
@@ -16,6 +17,7 @@ export default function RegisterView() {
     role: "TaxPayer",
   });
   const [confirmaSenha, setConfirmaSenha] = useState("");
+  const navigate = useNavigate();
 
   const handleCheckboxChange = (e) => {
     setIsCompany(e.target.checked);
@@ -23,44 +25,40 @@ export default function RegisterView() {
 
   const handleRegister = () => {
     if (
-      newUser.firstName == "" ||
-      newUser.lastName == "" ||
-      newUser.password == "" ||
-      newUser.taxPayerDocument == "" ||
-      newUser.email == "" ||
-      newUser.role == "" ||
-      confirmaSenha == ""
+      newUser.firstName === "" ||
+      newUser.lastName === "" ||
+      newUser.password === "" ||
+      newUser.taxPayerDocument === "" ||
+      newUser.email === "" ||
+      newUser.role === "" ||
+      confirmaSenha === ""
     ) {
       alert("Todos os campos devem ser preenchidos!");
       return;
     }
 
-    if (newUser.role == "Admin") {
+    if (newUser.role === "Admin") {
       if (!isValidCNPJ(newUser.taxPayerDocument)) {
         alert("O CNPJ está em formato inválido!");
         return;
       }
     }
 
-    if (newUser.role == "TaxPayer") {
+    if (newUser.role === "TaxPayer") {
       if (!isValidCPF(newUser.taxPayerDocument)) {
         alert("O CPF está em formato inválido!");
         return;
       }
     }
 
-    if (confirmaSenha != newUser.password) {
+    if (confirmaSenha !== newUser.password) {
       alert("As senhas devem ser iguais!");
       return;
     }
 
-    // alert(`
-    //   ${newUser.firstName},
-    //   ${newUser.lastName},
-    //   ${newUser.password},
-    //   ${newUser.role},
-    //   ${newUser.taxPayerDocument} `);
     registerService(newUser);
+    alert("Usuário cadastrado com sucesso.");
+    navigate("/");
     try {
     } catch (error) {
       alert(error.message);
@@ -163,23 +161,27 @@ export default function RegisterView() {
         <Checkbox onChange={handleCheckboxChange}>Pessoa Jurídica</Checkbox>
       </div>
       <div className="register-product-buttons-cadastro">
-        <a>Fazer Login</a>
         <Button
           type="primary"
           size="large"
-          style={{ backgroundColor: "#FFA500", borderColor: "#FFA500" }}
+          style={{
+            backgroundColor: "#FFA500",
+            borderColor: "#FFA500",
+            fontWeight: "bold",
+          }}
           onClick={handleRegister}
         >
           Cadastrar
         </Button>
       </div>
+      <a
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        Fazer Login
+      </a>
     </div>
-
-    // Nome
-    // Sobrenome
-    // CPF
-    // Email
-    // Password
-    // Confirme Password
   );
 }

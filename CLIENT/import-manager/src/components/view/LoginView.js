@@ -3,10 +3,11 @@ import { Button, Checkbox, Input } from "antd";
 import "../../styles/loginView.css";
 import "../../styles/styles.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginView() {
   const [isCompany, setIsCompany] = useState(false);
-
+  const navigate = useNavigate();
   const handleCheckboxChange = (e) => {
     setIsCompany(e.target.checked);
   };
@@ -68,7 +69,14 @@ export default function LoginView() {
         >
           Entrar
         </Button>
-        <a>Cadastre-se</a>
+        <a
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/user/cadastro");
+          }}
+        >
+          Cadastre-se
+        </a>
       </div>
     </div>
   );

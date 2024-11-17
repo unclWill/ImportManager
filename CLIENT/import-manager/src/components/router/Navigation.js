@@ -6,7 +6,7 @@ export default function Navigation() {
     <BrowserRouter>
       <Routes>
         <Route index element={<LoginView />} />
-        <Route path="cadastro" element={<RegisterView />} />
+        <Route path="user/cadastro" element={<RegisterView />} />
       </Routes>
     </BrowserRouter>
   );
