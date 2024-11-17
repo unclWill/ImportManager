@@ -17,7 +17,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         
-        builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001");
+        builder.WebHost.UseUrls("http://35.215.241.37:5000", "https://35.215.241.37:5001");
 
         builder.Services.AddAuthentication(x =>
             {
@@ -91,6 +91,7 @@ public class Program
 
         //app.UseHttpsRedirection();
 
+        app.UseCors("AllowAllOrigins");
         app.UseAuthentication();
         app.UseAuthorization();
         
