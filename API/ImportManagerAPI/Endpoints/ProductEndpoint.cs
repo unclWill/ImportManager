@@ -1,6 +1,6 @@
 using AutoMapper;
 using ImportManagerAPI.Data;
-using ImportManagerAPI.DTOs;
+using ImportManagerAPI.DTOs.Products;
 using ImportManagerAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,187 +15,150 @@ public static class ProductEndpoint
 
         group.MapGet("/", GetAsync);
         group.MapGet("/{id}", GetByIdAsync);
+        group.MapGet("/owner/{taxPayerDocument}", GetByOwnerTaxPayerDocumentAsync);
         group.MapPost("", PostAsync);
         group.MapPut("/{id}", PutAsync);
         group.MapDelete("/{id}", DeleteAsync);
     }
 
     private static async Task<IResult> GetAsync(ImportManagerContext db, IMapper mapper)
-    {   
+    {
         try
         {
-            var products = await db.Products.Include(p => p.Category).ToListAsync();
+            var products = await db.Products
+                .Include(p => p.Owner)
+                .ToListAsync();
+                
             var productDtos = mapper.Map<List<ProductDto>>(products);
-
             return Results.Ok(productDtos);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return TypedResults.Problem(
-                detail: "Ocorreu um erro ao tentar recuperar a lista de produtos.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
+            return TypedResults.Problem("Erro ao buscar produtos.", statusCode: 500);
         }
     }
 
     private static async Task<IResult> GetByIdAsync(long id, ImportManagerContext db, IMapper mapper)
     {
-        try
+        if (id <= 0)
         {
-            if (id <= 0)
-            {
-                return TypedResults.BadRequest("O ID fornecido não é válido.");
-            }
-
-            var product = await db.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-            if (product == null)
-            {
-                return TypedResults.NotFound($"Produto {id} não encontrado.");
-            }
-
-            var productDto = mapper.Map<ProductDto>(product);
-            return Results.Ok(productDto);
-        }
-        catch (Exception ex)
-        {
-            return TypedResults.Problem(
-                detail: "Ocorreu um erro ao tentar recuperar os produtos.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
+            return TypedResults.BadRequest("ID inválido.");
         }
         
+        var product = await db.Products
+            .Include(p => p.Owner)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+        {
+            return TypedResults.NotFound("Produto não encontrado.");
+        }
+        
+        var productDto = mapper.Map<ProductDto>(product);
+        return Results.Ok(productDto);
     }
 
-    private static async Task<IResult> PostAsync([FromBody] ProductDto productDto, ImportManagerContext db, IMapper mapper)
+    private static async Task<IResult> GetByOwnerTaxPayerDocumentAsync(string taxPayerDocument, ImportManagerContext db, IMapper mapper)
+    {
+        if (string.IsNullOrWhiteSpace(taxPayerDocument))
+            return TypedResults.BadRequest("Documento do proprietário é obrigatório.");
+
+        var products = await db.Products
+            .Include(p => p.Owner)
+            .Where(p => p.Owner.TaxPayerDocument == taxPayerDocument)
+            .ToListAsync();
+
+        if (!products.Any())
+        {
+            return TypedResults.NotFound("Nenhum produto encontrado.");
+        }
+        
+        var productDtos = mapper.Map<List<ProductDto>>(products);
+        return Results.Ok(productDtos);
+    }
+    
+    private static async Task<IResult> PostAsync([FromBody] ProductCreateDto productCreateDto, ImportManagerContext db, IMapper mapper)
     {
         try
         {
-            if (productDto == null)
+            if (productCreateDto == null || string.IsNullOrWhiteSpace(productCreateDto.Name))
             {
-                return TypedResults.BadRequest("O corpo da requisição está vazio ou é inválido.");
+                return TypedResults.BadRequest("Dados do produto inválidos.");
             }
+            
+            var user = await db.Users.FirstOrDefaultAsync(u => u.TaxPayerDocument == productCreateDto.OwnerTaxPayerDocument);
 
-            var category = await db.Categories.FindAsync(productDto.CategoryId);
-            if (category == null)
+            if (user == null)
             {
-                return TypedResults.BadRequest("Categoria não encontrada.");
+                return TypedResults.BadRequest("Usuário não encontrado.");
             }
-
-            db.Entry(category).State = EntityState.Unchanged;
-
-            var product = mapper.Map<Product>(productDto);
-
-            db.Products.Add(product);
+            
+            var product = mapper.Map<Product>(productCreateDto);
+            await db.Products.AddAsync(product);
             await db.SaveChangesAsync();
 
-            return TypedResults.Created($"/products/{product.Id}", product);
+            var createdProductDto = mapper.Map<ProductDto>(product);
+            return TypedResults.Created($"/products/{product.Id}", createdProductDto);
         }
-        catch (DbUpdateException ex)
+        catch (Exception)
         {
-            return TypedResults.Problem(
-                detail: "Erro ao salvar os dados no banco. Por favor, tente novamente.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
+            return TypedResults.Problem("Erro ao criar produto.", statusCode: 500);
         }
-        catch (AutoMapperMappingException ex)
-        {
-            return TypedResults.Problem(
-                detail: ex.Message,
-                title: "Ocorreu um erro ao tentar criar o produto",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
-        }
-       
     }
 
-    private static async Task<IResult> PutAsync(long id, ProductDto productDto, ImportManagerContext db, IMapper mapper)
-    {   
+    private static async Task<IResult> PutAsync(long id, [FromBody] ProductDto productDto, ImportManagerContext db, IMapper mapper)
+    {
         try
         {
-            if (id <= 0)
+            if (id <= 0 || productDto == null || string.IsNullOrWhiteSpace(productDto.Name))
             {
-                return TypedResults.BadRequest("O ID do produto deve ser maior que zero.");
+                return TypedResults.BadRequest("Dados inválidos.");
             }
-
-
-            var product = await db.Products.FindAsync(id);    
+            
+            var product = await db.Products.FindAsync(id);
             if (product == null)
-            {
                 return TypedResults.NotFound("Produto não encontrado.");
-            }
-
-            mapper.Map(productDto, product);
-
-            var category = await db.Categories.FindAsync(product.CategoryId);
-            if (category == null)
+            
+            var user = await db.Users.FirstOrDefaultAsync(u => u.TaxPayerDocument == productDto.OwnerTaxPayerDocument);
+            if (user == null)
             {
-                return TypedResults.BadRequest("Categoria inválida.");
+                return TypedResults.BadRequest("Usuário não encontrado.");
             }
-
+            
+            mapper.Map(productDto, product);
             await db.SaveChangesAsync();
 
-            var updatedProductDto = mapper.Map<ProductDto>(product);
-            return TypedResults.Ok(updatedProductDto);
+            return Results.Ok(mapper.Map<ProductDto>(product));
         }
-        catch (DbUpdateException ex)
+        catch (Exception)
         {
-            return TypedResults.Problem(
-                detail: "Erro ao salvar as alterações no banco de dados. Por favor, tente novamente.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
+            return TypedResults.Problem("Erro ao atualizar produto.", statusCode: 500);
         }
-        catch (AutoMapperMappingException ex)
-        {
-            return TypedResults.Problem(
-                detail: "Erro ao mapear os dados. Verifique as configurações do mapeamento.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
-        }
-        catch (Exception ex)
-        {
-            return TypedResults.Problem(
-                detail: "Ocorreu um erro inesperado. Por favor, entre em contato com o suporte.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
-        }
-        
     }
 
     private static async Task<IResult> DeleteAsync(long id, ImportManagerContext db)
-    {   
+    {
         try
         {
             if (id <= 0)
             {
-                return TypedResults.BadRequest("O ID do usuário deve ser maior que zero.");
+                return TypedResults.BadRequest("ID inválido.");
             }
 
             var product = await db.Products.FindAsync(id);
             if (product == null)
             {
-                return TypedResults.NotFound($"Produto {id} não encontrado.");
+                return TypedResults.NotFound("Produto não encontrado.");
             }
-
+            
             db.Products.Remove(product);
             await db.SaveChangesAsync();
 
             return TypedResults.NoContent();
         }
-         catch (DbUpdateException ex)
+        catch (Exception)
         {
-            return TypedResults.Problem(
-                detail: "Erro ao tentar remover o produto. Por favor, tente novamente.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
+            return TypedResults.Problem("Erro ao excluir produto.", statusCode: 500);
         }
-        catch (Exception ex)
-        {
-            return TypedResults.Problem(
-                detail: "Ocorreu um erro inesperado ao tentar remover o produto. Por favor, entre em contato com o suporte.",
-                statusCode: StatusCodes.Status500InternalServerError
-            );
-        }
-        
     }
-
 }

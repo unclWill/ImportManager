@@ -1,10 +1,9 @@
 using System.Text;
 using System.Text.Json.Serialization;
-using AutoMapper;
 using ImportManagerAPI.Authorization;
 using ImportManagerAPI.Data;
-using ImportManagerAPI.DTOs;
 using ImportManagerAPI.Endpoints;
+using ImportManagerAPI.Profiles;
 using ImportManagerAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -95,10 +94,7 @@ public class Program
         
         app.AddAuthEndpoints();
         app.AddUserEndpoints();
-
         app.AddProductEndpoints();
-
-        app.AddCategoryEndpoints();
         
         app.MapControllers();
         

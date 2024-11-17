@@ -11,21 +11,22 @@ public static class AuthEndpoint
     public static void AddAuthEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/auth");
-
+        
         group.MapPost("/login", LoginAsync).AllowAnonymous();
         group.MapPost("/logout", LogoutAsync).RequireAuthorization();
     }
 
     private static async Task<IResult> LoginAsync([FromBody] LoginDto loginDto, ImportManagerContext db, TokenService tokenService)
     {
+        if (string.IsNullOrWhiteSpace(loginDto.TaxPayerDocument) || string.IsNullOrWhiteSpace(loginDto.Password))
+        {
+            return TypedResults.BadRequest("CPF/CNPJ e a senha são campos de preenchimento obrigatório!");
+        }
+
         try
         {
-            if (string.IsNullOrWhiteSpace(loginDto.TaxPayerDocument) || string.IsNullOrWhiteSpace(loginDto.Password))
-            {
-                return TypedResults.BadRequest("Usuário e senha são obrigatórios.");
-            }
-            
             var user = await db.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.TaxPayerDocument == loginDto.TaxPayerDocument);
 
             if (user == null || !user.ValidatePassword(loginDto.Password))
@@ -34,39 +35,37 @@ public static class AuthEndpoint
             }
             
             var token = tokenService.GenerateToken(user);
-
-            return TypedResults.Ok(new { Token = token });
+            return TypedResults.Ok(new { token });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return TypedResults.Problem(
-                detail: "Ocorreu um erro ao tentar fazer login.",
+                detail: "Ocorreu um erro ao tentar fazer login!",
                 statusCode: StatusCodes.Status500InternalServerError
             );
         }
     }
 
-    private static Task<IResult> LogoutAsync(HttpContext context)
+    private static IResult LogoutAsync(HttpContext context)
     {
         try
         {
-            var token = context.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+            var token = context.Request.Headers.Authorization.ToString()?.Replace("Bearer ", "");
 
             if (string.IsNullOrEmpty(token))
             {
-                return Task.FromResult<IResult>(TypedResults.Unauthorized());
+                return TypedResults.Unauthorized();
             }
             
             context.Response.Headers.Remove("Authorization");
-            
-            return Task.FromResult<IResult>(TypedResults.Ok("Logout realizado com sucesso."));
+            return TypedResults.Ok("Logout realizado com sucesso!");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return Task.FromResult<IResult>(TypedResults.Problem(
+            return TypedResults.Problem(
                 detail: "Ocorreu um erro ao tentar fazer logout.",
                 statusCode: StatusCodes.Status500InternalServerError
-            ));
+            );
         }
     }
 }

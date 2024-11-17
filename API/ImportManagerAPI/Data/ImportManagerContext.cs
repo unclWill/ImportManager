@@ -15,7 +15,6 @@ public class ImportManagerContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<StockMovimentation> StockMovimentations { get; set; }
-    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,31 +23,24 @@ public class ImportManagerContext : DbContext
             .HasKey(u => u.Id);
         modelBuilder.Entity<Product>()
             .HasKey(p => p.Id);
-        modelBuilder.Entity<Category>()
-            .HasKey(c => c.Id);
         modelBuilder.Entity<StockMovimentation>()
             .HasKey(sm => sm.Id);
         #endregion
-        
+
         #region Relacionamentos
-        modelBuilder.Entity<Product>()
-            .HasOne(p => p.Category)
-            .WithMany(c => c.Products)
-            .HasForeignKey(p => p.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
         modelBuilder.Entity<Product>()
             .HasOne(p => p.Owner)
             .WithMany()
-            .HasForeignKey(p => p.UserId)
+            .HasForeignKey(p => p.OwnerTaxPayerDocument)
+            .HasPrincipalKey(u => u.TaxPayerDocument)
             .OnDelete(DeleteBehavior.Restrict);
-        
+
         modelBuilder.Entity<StockMovimentation>()
             .HasOne(sm => sm.Product)
             .WithMany()
             .HasForeignKey(sm => sm.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         modelBuilder.Entity<StockMovimentation>()
             .HasOne(sm => sm.User)
             .WithMany()

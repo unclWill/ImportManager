@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ImportManagerAPI.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImportManagerAPI.Models;
 
 [Table("Users")]
+[Index(nameof(TaxPayerDocument), IsUnique=true)]
 public class User
 {
     [Key]

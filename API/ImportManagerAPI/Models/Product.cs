@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ImportManagerAPI.Models.Enums;
 
 namespace ImportManagerAPI.Models;
 
@@ -20,11 +21,11 @@ public class Product
     [Column(TypeName = "decimal(18,2)")] 
     public decimal Price { get; set; }
 
-    public long UserId { get; set; }
-    [ForeignKey("UserId")] 
+    [MaxLength(16)]
+    public string OwnerTaxPayerDocument { get; set; } 
+    
+    [ForeignKey(nameof(OwnerTaxPayerDocument))]
     public User Owner { get; set; }
-
-    public long CategoryId { get; set; }
-    [ForeignKey("CategoryId")] 
+    
     public Category Category { get; set; }
 }
