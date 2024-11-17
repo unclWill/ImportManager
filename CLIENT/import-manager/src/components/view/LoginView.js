@@ -66,6 +66,9 @@ export default function LoginView() {
             borderColor: "#FFA500",
             fontWeight: "bold",
           }}
+          onClick={() => {
+            navigate("/produtos/lista");
+          }}
         >
           Entrar
         </Button>

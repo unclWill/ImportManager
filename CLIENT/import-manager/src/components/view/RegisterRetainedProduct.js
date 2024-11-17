@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import "../../styles/styles.css";
 import "../../styles/registerRetainedProduct.css";
 import { registerProductService } from "../service/RegisterProductService";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterRetainedProduct() {
   const { TextArea } = Input;
@@ -16,6 +16,7 @@ export default function RegisterRetainedProduct() {
     category: "",
     owner: "",
   });
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     console.log("Change:", e.target.value);
@@ -35,8 +36,8 @@ export default function RegisterRetainedProduct() {
     }
 
     registerProductService(newProduct);
-    alert("Usuário cadastrado com sucesso.");
-    //Navigate("/");
+    alert("Produto cadastrado com sucesso.");
+
     try {
     } catch (error) {
       alert(error.message);
@@ -144,6 +145,7 @@ export default function RegisterRetainedProduct() {
               width: "6rem",
               margin: "1rem",
             }}
+            onClick={navigate("")}
           >
             Cancelar
           </Button>
