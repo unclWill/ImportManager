@@ -13,7 +13,7 @@ export default function AuthProvider({ children }) {
 
   async function handleLogin(doc, senha, isVitima) {
     try {
-      const data = await loginService(doc, senha, true);
+      const data = await loginService(doc, senha, isVitima);
       const token = data.token;
 
       if (token) {
@@ -24,8 +24,6 @@ export default function AuthProvider({ children }) {
         user.doc = unique_name;
         user.role = role;
         user.token = token;
-
-        alert(user.name);
       }
     } catch (error) {
       Alert(error.message);

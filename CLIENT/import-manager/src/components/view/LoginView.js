@@ -2,8 +2,9 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input } from "antd";
 import "../../styles/loginView.css";
 import "../../styles/styles.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthProvider";
 
 export default function LoginView() {
   const [isCompany, setIsCompany] = useState(false);
@@ -11,6 +12,27 @@ export default function LoginView() {
   const handleCheckboxChange = (e) => {
     setIsCompany(e.target.checked);
   };
+  const [newUser, setNewUser] = useState({
+    doc: "",
+    senha: "",
+    isVitima: true,
+  });
+  const { handleLogin } = useContext(AuthContext);
+
+  async function auth() {
+    try {
+      const userL = await handleLogin(
+        newUser.doc,
+        newUser.senha,
+        newUser.isVitima ? "TaxPayer" : "Admin"
+      );
+
+      if (userL.token !== "") {
+        navigate("");
+      }
+    } catch (error) {}
+  }
+
   return (
     <div className="container">
       <img src={"/leao.png"} alt="Logo InvestManager" className="logo-img" />
