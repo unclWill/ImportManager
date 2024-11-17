@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ImportManagerAPI.Data;
 using ImportManagerAPI.DTOs;
+using ImportManagerAPI.DTOs.Users;
 using ImportManagerAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,6 @@
 ﻿using ImportManagerAPI.Models.Enums;
 
-namespace ImportManagerAPI.DTOs;
+namespace ImportManagerAPI.DTOs.Auth;
 
 public class AuthResponseDto
 {

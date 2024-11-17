@@ -1,10 +1,9 @@
-﻿using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using System.Text.Json.Serialization;
+using System.Runtime.Serialization;
 
 namespace ImportManagerAPI.Models.Enums;
 
-[JsonConverter(typeof(StringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum MovementType
 {
     [EnumMember(Value = "Entrada")]

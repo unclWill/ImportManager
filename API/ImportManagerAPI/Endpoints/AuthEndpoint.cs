@@ -1,5 +1,6 @@
 ﻿using ImportManagerAPI.Data;
 using ImportManagerAPI.DTOs;
+using ImportManagerAPI.DTOs.Auth;
 using ImportManagerAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

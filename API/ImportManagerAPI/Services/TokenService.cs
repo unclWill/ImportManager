@@ -29,9 +29,9 @@ public class TokenService
     private static ClaimsIdentity GenerateClaims(User user)
     {
         var ci = new ClaimsIdentity();
+        ci.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
         ci.AddClaim(new Claim(ClaimTypes.Name, user.FirstName));
         ci.AddClaim(new Claim(ClaimTypes.Actor, user.TaxPayerDocument));
-        ci.AddClaim(new Claim(ClaimTypes.Email, user.Email));
         ci.AddClaim(new Claim(ClaimTypes.Role, user.Role.ToString()));
 
         return ci;

@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using ImportManagerAPI.Models.Enums;
 
-namespace ImportManagerAPI.DTOs;
+namespace ImportManagerAPI.DTOs.Users;
 
 public class UserUpdateDto
 {

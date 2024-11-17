@@ -62,6 +62,8 @@ public class Program
 
         // Mapeamentos.
         builder.Services.AddAutoMapper(typeof(MappingProfile));
+        
+        // DIs.
         builder.Services.AddScoped<TokenService>();
         
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -95,6 +97,7 @@ public class Program
         app.AddAuthEndpoints();
         app.AddUserEndpoints();
         app.AddProductEndpoints();
+        app.AddStockMovementEndpoints();
         
         app.MapControllers();
         
