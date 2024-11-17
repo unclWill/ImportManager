@@ -5,6 +5,7 @@ import "../../styles/styles.css";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
+import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
 
 export default function LoginView() {
   const [isCompany, setIsCompany] = useState(false);
@@ -15,22 +16,38 @@ export default function LoginView() {
   const [newUser, setNewUser] = useState({
     doc: "",
     senha: "",
-    isVitima: true,
   });
   const { handleLogin } = useContext(AuthContext);
 
   async function auth() {
     try {
-      const userL = await handleLogin(
-        newUser.doc,
-        newUser.senha,
-        newUser.isVitima ? "TaxPayer" : "Admin"
-      );
-
-      if (userL.token !== "") {
-        navigate("");
+      if (newUser.doc === "" || newUser.senha === "") {
+        alert("Todos os campos devem ser preenchidos!");
+        return;
       }
-    } catch (error) {}
+
+      if (isCompany) {
+        if (!isValidCNPJ(newUser.doc)) {
+          alert("O CNPJ está em formato inválido!");
+          return;
+        }
+      }
+
+      if (!isCompany) {
+        if (!isValidCPF(newUser.doc)) {
+          alert("O CPF está em formato inválido!");
+          return;
+        }
+      }
+
+      const userL = handleLogin(newUser.doc, newUser.senha);
+
+      if (userL.token) {
+        navigate("/produtos/lista");
+      }
+    } catch (error) {
+      alert("Site do governo é assim mesmo, tenta amanhã");
+    }
   }
 
   return (
@@ -46,6 +63,8 @@ export default function LoginView() {
               size="large"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
+              value={newUser.doc}
+              onChange={(t) => setNewUser({ ...newUser, doc: t.target.value })}
             />
           </>
         ) : (
@@ -55,6 +74,8 @@ export default function LoginView() {
               size="large"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
+              value={newUser.doc}
+              onChange={(t) => setNewUser({ ...newUser, doc: t.target.value })}
             />
           </>
         )}
@@ -64,6 +85,8 @@ export default function LoginView() {
           size="large"
           placeholder="Digite a sua senha"
           prefix={<LockOutlined />}
+          value={newUser.senha}
+          onChange={(t) => setNewUser({ ...newUser, senha: t.target.value })}
         />
 
         <Checkbox
@@ -88,16 +111,14 @@ export default function LoginView() {
             borderColor: "#FFA500",
             fontWeight: "bold",
           }}
-          onClick={() => {
-            navigate("/produtos/lista");
-          }}
+          onClick={auth}
         >
           Entrar
         </Button>
         <a
           style={{ cursor: "pointer" }}
           onClick={() => {
-            navigate("/user/cadastro");
+            navigate("user/cadastro");
           }}
         >
           Cadastre-se

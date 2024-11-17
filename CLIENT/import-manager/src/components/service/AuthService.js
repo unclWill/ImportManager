@@ -2,15 +2,14 @@ import axios from "axios";
 
 const URL = "http://meister.app.br:5000";
 
-async function loginService(doc, senha, isVitima) {
+async function loginService(doc, senha) {
   const data = {
-    TaxPayerDocument: `${doc}`,
-    Password: `${senha}`,
-    Role: isVitima ? `TaxPayer` : `Admin`,
+    taxPayerDocument: `${doc}`,
+    password: `${senha}`,
   };
 
   try {
-    const response = await axios.post(`${URL}/login`, data, {
+    const response = await axios.post(`${URL}/auth/login`, data, {
       headers: {
         "Content-Type": "application/json",
       },

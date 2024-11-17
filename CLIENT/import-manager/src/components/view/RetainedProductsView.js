@@ -3,6 +3,7 @@ import "../../styles/retainedProducts.css";
 import { Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { AuthContext } from "../context/AuthProvider";
+import { searchAll } from "../service/ProductService";
 
 const RetainedProductsView = () => {
   const { user } = useContext(AuthContext);
@@ -37,6 +38,19 @@ const RetainedProductsView = () => {
       status: "Retido",
     },
   ]);
+
+  async function render() {
+    try {
+      const list = await searchAll(user.doc, user.token);
+      console.log(list);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    render();
+  }, []);
 
   return (
     <div className="retained-products-view">

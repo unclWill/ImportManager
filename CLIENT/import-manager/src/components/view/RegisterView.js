@@ -37,14 +37,14 @@ export default function RegisterView() {
       return;
     }
 
-    if (newUser.role === "Admin") {
+    if (isCompany) {
       if (!isValidCNPJ(newUser.taxPayerDocument)) {
         alert("O CNPJ está em formato inválido!");
         return;
       }
     }
 
-    if (newUser.role === "TaxPayer") {
+    if (!isCompany) {
       if (!isValidCPF(newUser.taxPayerDocument)) {
         alert("O CPF está em formato inválido!");
         return;
