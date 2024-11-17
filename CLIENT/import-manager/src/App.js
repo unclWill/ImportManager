@@ -2,7 +2,7 @@ import React from "react";
 import Navigation from "./components/router/Navigation";
 
 function App() {
-  return <Navigation></Navigation>;
+  return <Navigation />;
 }
 
 export default App;
