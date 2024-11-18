@@ -4,9 +4,12 @@ import { Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { AuthContext } from "../context/AuthProvider";
 import { searchAll } from "../service/ProductService";
+import { useNavigate } from "react-router-dom";
 
 const RetainedProductsView = () => {
   const { user } = useContext(AuthContext);
+  const [list, setList] = useState(null);
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState([
     {
@@ -40,6 +43,21 @@ const RetainedProductsView = () => {
   ]);
 
   async function render() {
+    if (user.role === "Admin") {
+      try {
+        const newList = await searchAll(user.doc, user.token);
+        console.log(list);
+
+        if (newList) {
+          setList(newList);
+        }
+      } catch (error) {
+        alert(
+          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!"
+        );
+      }
+    }
+
     try {
       const list = await searchAll(user.doc, user.token);
       console.log(list);
@@ -69,22 +87,23 @@ const RetainedProductsView = () => {
       </div>
 
       <ul className="product-list">
-        {products.map((product) => (
-          <li
-            key={product.id}
-            className={`product-item ${product.status.toLowerCase()}`}
-          >
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <p>Quantidade: {product.quantity}</p>
-            <p>
-              Status:{" "}
-              <span className={`status ${product.status.toLowerCase()}`}>
-                {product.status}
-              </span>
-            </p>
-          </li>
-        ))}
+        {list &&
+          list.map((product) => (
+            <li
+              key={product.id}
+              className={`product-item ${product.isFinalized && "Liberado"}`}
+            >
+              <h3>{product.productName}</h3>
+              <p>Valor a pagar: {product.totalPrice}</p>
+              <p>Quantidade: {product.quantity}</p>
+              {/* <p>
+                Status:
+                <span className={`status ${product.isFinalized && "Retido"}`}>
+                  {product.isFinalized}
+                </span>
+              </p> */}
+            </li>
+          ))}
       </ul>
 
       <Button
@@ -113,6 +132,9 @@ const RetainedProductsView = () => {
             position: "absolute",
             top: "9vw",
             right: "0.2vw",
+          }}
+          onClick={() => {
+            navigate("/produtos/cadastro");
           }}
         >
           Roubar Produto do Cidadão

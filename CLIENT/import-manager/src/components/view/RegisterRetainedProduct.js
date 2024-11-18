@@ -1,14 +1,13 @@
 import { CheckSquareFilled, PlusOutlined } from "@ant-design/icons";
-import { Button, Flex, Form, Input, Select } from "antd";
-import React, { useState } from "react";
-import "../../styles/styles.css";
-import "../../styles/registerRetainedProduct.css";
+import { Button, Form, Input, Select } from "antd";
+import React, { useMemo, useState } from "react";
 import { registerProductService } from "../service/RegisterProductService";
 import { useNavigate } from "react-router-dom";
+import "../../styles/registerRetainedProduct.css";
 
 export default function RegisterRetainedProduct() {
   const { TextArea } = Input;
-  const [newProduct, setNewProduct] = useState({
+  const [formValues, setFormValues] = useState({
     name: "",
     description: "",
     quantity: "",
@@ -16,29 +15,47 @@ export default function RegisterRetainedProduct() {
     category: "",
     owner: "",
   });
+
+  const newProduct = useMemo(() => {
+    return { ...formValues };
+  }, [formValues]);
+
   const navigate = useNavigate();
 
-  const onChange = (e) => {
-    console.log("Change:", e.target.value);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleRegister = () => {
+  const handleSelectChange = (value) => {
+    setFormValues((prev) => ({ ...prev, category: value }));
+  };
+
+  const handleRegister = async () => {
     if (
-      newProduct.name === "" ||
-      newProduct.description === "" ||
-      newProduct.quantity === "" ||
-      newProduct.price === "" ||
-      newProduct.category === "" ||
-      newProduct.owner === ""
+      !newProduct.name ||
+      !newProduct.description ||
+      !newProduct.quantity ||
+      !newProduct.price ||
+      !newProduct.category ||
+      !newProduct.owner
     ) {
       alert("Todos os campos devem ser preenchidos!");
       return;
     }
 
-    registerProductService(newProduct);
-    alert("Produto cadastrado com sucesso.");
-
     try {
+      await registerProductService(newProduct);
+      alert("Produto cadastrado com sucesso.");
+      setFormValues({
+        name: "",
+        description: "",
+        quantity: "",
+        price: "",
+        category: "",
+        owner: "",
+      });
+      navigate("/produtos/lista");
     } catch (error) {
       alert(error.message);
     }
@@ -55,57 +72,56 @@ export default function RegisterRetainedProduct() {
         <Input
           className="input"
           size="large"
+          name="name"
           placeholder="Digite o nome do produto"
           prefix={<CheckSquareFilled />}
-          onChange={(n) =>
-            setNewProduct({ ...newProduct, name: n.target.value })
-          }
+          value={newProduct.name}
+          onChange={handleInputChange}
         />
         <label style={{ marginBottom: "10px" }}>Descrição</label>
-        <Flex vertical gap={32}>
-          <TextArea
-            className="input"
-            showCount
-            maxLength={100}
-            onChange={(event) =>
-              setNewProduct({ ...newProduct, description: event.target.value })
-            }
-            placeholder="Digite a descrição do produto"
-            style={{
-              height: 80,
-              resize: "none",
-              borderWidth: "2px",
-              borderColor: "#000000",
-              marginBottom: "15px",
-            }}
-          />
-        </Flex>
+        <TextArea
+          className="input"
+          showCount
+          maxLength={100}
+          name="description"
+          value={newProduct.description}
+          onChange={handleInputChange}
+          placeholder="Digite a descrição do produto"
+          style={{
+            height: 80,
+            resize: "none",
+            borderWidth: "2px",
+            borderColor: "#000000",
+            marginBottom: "15px",
+          }}
+        />
         <label>Quantidade</label>
         <Input
           className="input"
           size="large"
+          name="quantity"
           placeholder="Quantidade"
           prefix={<PlusOutlined />}
-          onChange={(n) =>
-            setNewProduct({ ...newProduct, quantity: n.target.value })
-          }
+          value={newProduct.quantity}
+          onChange={handleInputChange}
         />
         <label>Preço</label>
         <Input
           className="input"
           size="large"
+          name="price"
           placeholder="Preço"
           prefix={<PlusOutlined />}
-          onChange={(n) =>
-            setNewProduct({ ...newProduct, price: n.target.value })
-          }
+          value={newProduct.price}
+          onChange={handleInputChange}
         />
         <label>Categoria</label>
         <Form.Item>
           <Select
             className="product-register-select"
             placeholder="Selecione uma categoria"
-            onChange={(n) => setNewProduct({ ...newProduct, category: n })}
+            value={newProduct.category}
+            onChange={handleSelectChange}
           >
             <Select.Option value=""></Select.Option>
             <Select.Option value="Eletronicos">Eletrônicos</Select.Option>
@@ -116,11 +132,11 @@ export default function RegisterRetainedProduct() {
         <Input
           className="input"
           size="large"
+          name="owner"
           placeholder="Digite o CPF do proprietário"
           prefix={<PlusOutlined />}
-          onChange={(n) =>
-            setNewProduct({ ...newProduct, owner: n.target.value })
-          }
+          value={newProduct.owner}
+          onChange={handleInputChange}
         />
         <div className="register-product-buttons-cadastro">
           <Button
@@ -145,7 +161,7 @@ export default function RegisterRetainedProduct() {
               width: "6rem",
               margin: "1rem",
             }}
-            onClick={navigate("")}
+            onClick={() => navigate("/produtos/lista")}
           >
             Cancelar
           </Button>

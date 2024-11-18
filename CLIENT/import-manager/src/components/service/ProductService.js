@@ -1,18 +1,13 @@
 import axios from "axios";
+const URL = "http://meister.app.br:5000";
 
-async function searchAll(doc, token) {
-  const data = {
-    taxPayerDocument: doc,
-  };
-
+async function searchAll() {
   try {
-    const response = await axios.post(
-      `${URL}/stock-movements/by-taxpayer/${doc}`,
-      data,
+    const response = await axios.get(
+      `${URL}/stock-movements/filter?IsFinalized=false`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
