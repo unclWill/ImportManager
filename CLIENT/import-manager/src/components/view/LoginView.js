@@ -40,7 +40,7 @@ export default function LoginView() {
         }
       }
 
-      const userL = handleLogin(newUser.doc, newUser.senha);
+      const userL = await handleLogin(newUser.doc, newUser.senha);
 
       if (userL.token) {
         navigate("/produtos/lista");

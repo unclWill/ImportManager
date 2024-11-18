@@ -22,6 +22,8 @@ export default function AuthProvider({ children }) {
         user.role = role;
         user.token = token;
       }
+
+      return user;
     } catch (error) {
       alert(error.message);
     }

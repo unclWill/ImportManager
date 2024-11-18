@@ -1,4 +1,5 @@
 import axios from "axios";
+import { cleanDoc } from "../../utils/Mascaras";
 
 const URL = "http://meister.app.br:5000";
 
@@ -39,7 +40,7 @@ async function registerService(user) {
     firstName: user.firstName,
     lastName: user.lastName,
     password: user.password,
-    taxPayerDocument: user.taxPayerDocument,
+    taxPayerDocument: cleanDoc(user.taxPayerDocument),
     email: user.email,
     role: user.role,
   };

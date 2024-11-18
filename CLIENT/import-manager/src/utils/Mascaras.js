@@ -8,4 +8,8 @@ function isValidCNPJ(cnpj) {
   return cnpjRegex.test(cnpj);
 }
 
-export { isValidCNPJ, isValidCPF };
+function cleanDoc(cpf) {
+  return cpf.replace(/\D/g, "");
+}
+
+export { isValidCNPJ, isValidCPF, cleanDoc };
