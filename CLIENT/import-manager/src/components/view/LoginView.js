@@ -2,12 +2,14 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input } from "antd";
 import "../../styles/loginView.css";
 import "../../styles/styles.css";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
+import ReactHowler from "react-howler";
 
 export default function LoginView() {
+  const [playing, setPlaying] = useState(false);
   const [isCompany, setIsCompany] = useState(false);
   const navigate = useNavigate();
   const handleCheckboxChange = (e) => {
@@ -18,6 +20,7 @@ export default function LoginView() {
     senha: "",
   });
   const { handleLogin } = useContext(AuthContext);
+  const audioRef = useRef(null);
 
   async function auth() {
     try {
@@ -50,10 +53,17 @@ export default function LoginView() {
     }
   }
 
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     audioRef.current.play();
+  //   }
+  // }, []);
+
   return (
     <div className="container">
+      <audio ref={audioRef} src="/audio/leao.mp3" preload="auto" />
       <img src={"/leao.png"} alt="Logo InvestManager" className="logo-img" />
-      <h1 className="title">ImportManager</h1>
+      <h1 className="title">Óh! Investimentos</h1>
       <div className="login-form">
         <label>Usuário</label>
         {isCompany ? (

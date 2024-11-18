@@ -29,8 +29,12 @@ export default function AuthProvider({ children }) {
     }
   }
 
+  function handleLogout() {
+    setUser(new User("", "", "", "", ""));
+  }
+
   return (
-    <AuthContext.Provider value={{ user, setUser, handleLogin }}>
+    <AuthContext.Provider value={{ user, setUser, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

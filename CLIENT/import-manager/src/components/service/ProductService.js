@@ -18,4 +18,42 @@ async function searchAll() {
   }
 }
 
-export { searchAll };
+async function searchAllByUser(id) {
+  try {
+    const response = await axios.get(
+      `${URL}/stock-movements/filter?UserId=${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return await response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function recoverProduct(id) {
+  const data = {
+    isFinalized: true,
+  };
+
+  try {
+    const response = await axios.put(
+      `${URL}/stock-movements/filter?UserId=${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return await response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { searchAll, searchAllByUser };

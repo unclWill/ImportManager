@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import "../../styles/retainedProducts.css";
-import { Button, Input } from "antd";
+import { Alert, Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { AuthContext } from "../context/AuthProvider";
-import { searchAll } from "../service/ProductService";
+import { searchAll, searchAllByUser } from "../service/ProductService";
 import { useNavigate } from "react-router-dom";
 
 const RetainedProductsView = () => {
-  const { user } = useContext(AuthContext);
+  const { user, handleLogout } = useContext(AuthContext);
   const [list, setList] = useState(null);
   const navigate = useNavigate();
 
@@ -46,7 +46,6 @@ const RetainedProductsView = () => {
     if (user.role === "Admin") {
       try {
         const newList = await searchAll(user.doc, user.token);
-        console.log(list);
 
         if (newList) {
           setList(newList);
@@ -58,15 +57,21 @@ const RetainedProductsView = () => {
       }
     }
 
-    try {
-      const list = await searchAll(user.doc, user.token);
-      console.log(list);
-    } catch (error) {
-      console.log(error);
+    if (user.role === "TaxPayer") {
+      try {
+        const newList = await searchAllByUser(user.id);
+
+        if (newList) {
+          setList(newList);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   useEffect(() => {
+    console.log(user.role);
     render();
   }, []);
 
@@ -96,12 +101,28 @@ const RetainedProductsView = () => {
               <h3>{product.productName}</h3>
               <p>Valor a pagar: {product.totalPrice}</p>
               <p>Quantidade: {product.quantity}</p>
-              {/* <p>
-                Status:
-                <span className={`status ${product.isFinalized && "Retido"}`}>
-                  {product.isFinalized}
-                </span>
-              </p> */}
+              {user.role === "TaxPayer" && (
+                <Button
+                  type="primary"
+                  size="small"
+                  style={{
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    fontWeight: "bold",
+                    position: "absolute",
+                    top: "4.7vw",
+                    right: "0.2vw",
+                    margin: "5px",
+                  }}
+                  onClick={() => {
+                    alert(
+                      "Funcionalidade ainda não implementada pelo companheiro Taxad"
+                    );
+                  }}
+                >
+                  Fazer o L
+                </Button>
+              )}
             </li>
           ))}
       </ul>
@@ -116,6 +137,9 @@ const RetainedProductsView = () => {
           position: "absolute",
           top: "5vw",
           right: "0.2vw",
+        }}
+        onClick={() => {
+          alert("Funcionalidade ainda não implementada pelo companheiro Taxad");
         }}
       >
         Alterar Dados
@@ -140,6 +164,26 @@ const RetainedProductsView = () => {
           Roubar Produto do Cidadão
         </Button>
       )}
+
+      <Button
+        type="primary"
+        size="large"
+        style={{
+          backgroundColor: "#FFA500",
+          borderColor: "#FFA500",
+          fontWeight: "bold",
+          position: "absolute",
+          top: "17vw",
+          left: "0.2vw",
+        }}
+        onClick={() => {
+          handleLogout();
+          alert("Deslogado com sucesso!");
+          navigate("/");
+        }}
+      >
+        Deslogar
+      </Button>
     </div>
   );
 };
