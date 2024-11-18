@@ -46,7 +46,7 @@ export default function LoginView() {
       const userL = await handleLogin(newUser.doc, newUser.senha);
 
       if (userL.token) {
-        navigate("/produtos/lista");
+        navigate("/loading");
       }
     } catch (error) {
       alert("Site do governo é assim mesmo, tenta amanhã");

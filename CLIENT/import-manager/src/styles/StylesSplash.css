@@ -1,0 +1,21 @@
+.container-splash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1351b4;
+}
+
+.container-splash > img {
+  position: absolute;
+  top: 50;
+  left: 50;
+}
+
+.container-splash > h1 {
+  position: absolute;
+  top: 32vw;
+  left: 45vw;
+  color: #fff;
+}
