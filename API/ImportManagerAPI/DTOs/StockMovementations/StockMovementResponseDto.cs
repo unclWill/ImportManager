@@ -16,9 +16,15 @@ public class StockMovementResponseDto
     
     public string ProductName { get; set; }
     
+    public string ProductDescription { get; set; }
+    
     public int Quantity { get; set; }
     
     public decimal TotalPrice { get; set; }
+    
+    public decimal? FeePercentage { get; set; }
+    
+    public decimal? FeeValue { get; set; }
     
     public DateTime MovementDate { get; set; }
     

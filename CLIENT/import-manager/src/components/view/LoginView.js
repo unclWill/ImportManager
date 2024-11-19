@@ -6,7 +6,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
-import ReactHowler from "react-howler";
+//import ReactHowler from "react-howler";
 
 export default function LoginView() {
   const [playing, setPlaying] = useState(false);

@@ -4,8 +4,12 @@ import React, { useMemo, useState } from "react";
 import { registerProductService } from "../service/RegisterProductService";
 import { useNavigate } from "react-router-dom";
 import "../../styles/registerRetainedProduct.css";
+import { AuthContext } from "../context/AuthProvider";
+import { useContext } from "react";
 
 export default function RegisterRetainedProduct() {
+  const { user, handleLogout } = useContext(AuthContext);
+
   const { TextArea } = Input;
   const [formValues, setFormValues] = useState({
     name: "",
@@ -14,6 +18,7 @@ export default function RegisterRetainedProduct() {
     price: "",
     category: "",
     owner: "",
+    feePercentage: "",
   });
 
   const newProduct = useMemo(() => {
@@ -38,14 +43,15 @@ export default function RegisterRetainedProduct() {
       !newProduct.quantity ||
       !newProduct.price ||
       !newProduct.category ||
-      !newProduct.owner
+      !newProduct.owner || 
+      !newProduct.feePercentage
     ) {
       alert("Todos os campos devem ser preenchidos!");
       return;
     }
 
     try {
-      await registerProductService(newProduct);
+      await registerProductService(newProduct, user.token);
       alert("Produto cadastrado com sucesso.");
       setFormValues({
         name: "",
@@ -54,6 +60,7 @@ export default function RegisterRetainedProduct() {
         price: "",
         category: "",
         owner: "",
+        feePercentage: "",
       });
       navigate("/produtos/lista");
     } catch (error) {
@@ -113,6 +120,16 @@ export default function RegisterRetainedProduct() {
           placeholder="Preço"
           prefix={<PlusOutlined />}
           value={newProduct.price}
+          onChange={handleInputChange}
+        />
+         <label>Taxa aplicada sobre o produto</label>
+        <Input
+          className="input"
+          size="large"
+          name="feePercentage"
+          placeholder="Digite apenas o valor da taxa, sem %"
+          prefix={<PlusOutlined />}
+          value={newProduct.feePercentage}
           onChange={handleInputChange}
         />
         <label>Categoria</label>

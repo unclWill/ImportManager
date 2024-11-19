@@ -1,7 +1,8 @@
 import axios from "axios";
 import { cleanDoc } from "../../utils/Mascaras";
+import apiConfig from "../../config/apiConfig";
 
-const URL = "http://meister.app.br:5000";
+const URL = apiConfig.baseUrl;
 
 async function loginService(doc, senha) {
   const data = {

@@ -80,39 +80,7 @@ public static class ProductEndpoint
         var productDtos = mapper.Map<List<ProductDto>>(products);
         return Results.Ok(productDtos);
     }
-
-    // private static async Task<IResult> PostAsync([FromBody] ProductCreateDto productCreateDto, ImportManagerContext db, IMapper mapper)
-    // {
-    //     try
-    //     {
-    //         if (productCreateDto == null || string.IsNullOrWhiteSpace(productCreateDto.Name))
-    //         {
-    //             return TypedResults.BadRequest("Dados do produto inválidos.");
-    //         }
-    //         
-    //         var user = await db.Users.FirstOrDefaultAsync(u => u.TaxPayerDocument == productCreateDto.OwnerTaxPayerDocument);
-    //
-    //         if (user == null)
-    //         {
-    //             return TypedResults.BadRequest("Usuário não encontrado.");
-    //         }
-    //         
-    //         var product = mapper.Map<Product>(productCreateDto);
-    //         await db.Products.AddAsync(product);
-    //         await db.SaveChangesAsync();
-    //
-    //         var createdProductDto = mapper.Map<ProductDto>(product);
-    //         return TypedResults.Created($"/products/{product.Id}", createdProductDto);
-    //     }
-    //     catch (Exception)
-    //     {
-    //         return TypedResults.Problem(
-    //             detail: "Ocorreu um erro ao tentar criar o produto.",
-    //             statusCode: StatusCodes.Status500InternalServerError
-    //         );
-    //     }
-    // }
-
+    
     private static async Task<IResult> PostAsync([FromBody] ProductCreateDto productCreateDto, ImportManagerContext db,
         IMapper mapper)
     {
@@ -138,7 +106,7 @@ public static class ProductEndpoint
                 var product = mapper.Map<Product>(productCreateDto);
                 await db.Products.AddAsync(product);
                 await db.SaveChangesAsync();
-
+                
                 var stockMovement = new StockMovimentation
                 {
                     UserId = user.Id,
@@ -146,11 +114,17 @@ public static class ProductEndpoint
                     Quantity = product.Quantity,
                     MovementType = MovementType.Entrada,
                     MovementDate = DateTime.UtcNow,
-                    TotalPrice = product.Price * product.Quantity,
+                    FeePercentage = product.FeePercentage ?? 0,
+                    FeeValue = product.FeePercentage.HasValue 
+                        ? product.Price * (product.FeePercentage.Value / 100m)
+                        : 0,
+                    TotalPrice = product.FeePercentage.HasValue 
+                        ? (product.Price + (product.Price * (product.FeePercentage.Value / 100m))) * product.Quantity
+                        : product.Price * product.Quantity,
                     TaxPayerDocument = productCreateDto.OwnerTaxPayerDocument,
                     IsFinalized = false
                 };
-
+                
                 await db.StockMovimentations.AddAsync(stockMovement);
                 await db.SaveChangesAsync();
 

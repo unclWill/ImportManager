@@ -1,13 +1,17 @@
 import axios from "axios";
-const URL = "http://meister.app.br:5000";
+import apiConfig from "../../config/apiConfig";
 
-async function searchAll() {
+const URL = apiConfig.baseUrl;
+
+async function searchAll(doc, token) {
   try {
     const response = await axios.get(
       `${URL}/stock-movements/filter?IsFinalized=false`,
       {
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         },
       }
     );
@@ -18,13 +22,15 @@ async function searchAll() {
   }
 }
 
-async function searchAllByUser(id) {
+async function searchAllByUser(id, token) {
   try {
     const response = await axios.get(
-      `${URL}/stock-movements/filter?UserId=${id}`,
+      `${URL}/stock-movements/filter?TaxPayerDocument=${id}`,
       {
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         },
       }
     );
@@ -45,7 +51,9 @@ async function recoverProduct(id) {
       `${URL}/stock-movements/filter?UserId=${id}`,
       {
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         },
       }
     );

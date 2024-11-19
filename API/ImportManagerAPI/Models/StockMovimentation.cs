@@ -24,6 +24,12 @@ public class StockMovimentation
     
     public int Quantity { get; set; }
     
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal? FeePercentage { get; set; }
+
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal? FeeValue { get; set; }
+    
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPrice { get; set; }
     

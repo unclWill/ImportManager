@@ -1,8 +1,9 @@
 import axios from "axios";
+import apiConfig from "../../config/apiConfig";
 
-const URL = "http://meister.app.br:5000";
+const URL = apiConfig.baseUrl;
 
-async function registerProductService(product) {
+async function registerProductService(product, token) {
   const data = {
     Name: product.name,
     Description: product.description,
@@ -10,11 +11,14 @@ async function registerProductService(product) {
     Price: product.price,
     Category: product.category,
     OwnerTaxPayerDocument: product.owner,
+    feePercentage: product.feePercentage
   };
   try {
     const response = await axios.post(`${URL}/products`, data, {
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
     });
     console.log(response);

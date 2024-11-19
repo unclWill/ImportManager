@@ -52,14 +52,14 @@ const RetainedProductsView = () => {
         }
       } catch (error) {
         alert(
-          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!"
+          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!", error
         );
       }
     }
 
     if (user.role === "TaxPayer") {
       try {
-        const newList = await searchAllByUser(user.id);
+        const newList = await searchAllByUser(user.doc, user.token);
 
         if (newList) {
           setList(newList);
@@ -101,6 +101,7 @@ const RetainedProductsView = () => {
               <h3>{product.productName}</h3>
               <p>Valor a pagar: {product.totalPrice}</p>
               <p>Quantidade: {product.quantity}</p>
+              <p>Descrição: {product.productDescription}</p>
               {user.role === "TaxPayer" && (
                 <Button
                   type="primary"

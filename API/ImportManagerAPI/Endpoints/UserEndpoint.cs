@@ -14,8 +14,8 @@ public static class UserEndpoint
     {
         var group = app.MapGroup("/users");
 
-        group.MapGet("/", GetAsync);//.RequireAuthorization();
-        group.MapGet("/{id:long?}", GetByIdAsync);//.RequireAuthorization();
+        group.MapGet("/", GetAsync);
+        group.MapGet("/{id:long?}", GetByIdAsync);
         group.MapGet("/identify/{taxPayerDocument}", GetByTaxPayerDocumentAsync);
         group.MapPost("", PostAsync);
         group.MapPut("/{id}", PutAsync);

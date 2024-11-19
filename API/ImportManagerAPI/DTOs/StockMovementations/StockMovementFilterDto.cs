@@ -4,13 +4,17 @@ namespace ImportManagerAPI.DTOs.StockMovementations;
 
 public class StockMovementFilterDto
 {
-    public DateTime? StartDate { get; set; }
-    
-    public DateTime? EndDate { get; set; }
+    // public DateTime? StartDate { get; set; }
+    //
+    // public DateTime? EndDate { get; set; }
     
     public long? ProductId { get; set; }
     
+    public string? ProductName { get; set; }
+    
     public long? UserId { get; set; }
+    
+    public string? TaxPayerDocument { get; set; }
     
     public MovementType? MovementType { get; set; }
     

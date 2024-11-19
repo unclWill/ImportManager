@@ -403,3 +403,4 @@ FodyWeavers.xsd
 
 #Secrets
 .secrets.json
+CLIENT/import-manager/package-lock.json
