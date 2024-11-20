@@ -49,10 +49,12 @@ const RetainedProductsView = () => {
 
         if (newList) {
           setList(newList);
+          console.log(newList);
         }
       } catch (error) {
         alert(
-          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!", error
+          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!",
+          error
         );
       }
     }
@@ -99,7 +101,12 @@ const RetainedProductsView = () => {
               className={`product-item ${product.isFinalized && "Liberado"}`}
             >
               <h3>{product.productName}</h3>
-              <p>Valor a pagar: {product.totalPrice}</p>
+              <p>
+                Valor a pagar: {product.totalPrice}{" "}
+                <span style={{ fontSize: "0.9rem", color: "lightgrey" }}>
+                  Taxad de {product.feePercentage}% aplicada
+                </span>
+              </p>
               <p>Quantidade: {product.quantity}</p>
               <p>Descrição: {product.productDescription}</p>
               {user.role === "TaxPayer" && (

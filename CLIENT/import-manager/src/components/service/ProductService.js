@@ -10,8 +10,8 @@ async function searchAll(doc, token) {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -29,8 +29,8 @@ async function searchAllByUser(id, token) {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -41,8 +41,10 @@ async function searchAllByUser(id, token) {
   }
 }
 
-async function recoverProduct(id) {
+async function recoverProduct(id, quantity) {
   const data = {
+    quantity: 0,
+    feePercentage: 0,
     isFinalized: true,
   };
 
@@ -52,8 +54,8 @@ async function recoverProduct(id) {
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
