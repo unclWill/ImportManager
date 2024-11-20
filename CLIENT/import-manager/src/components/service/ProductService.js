@@ -41,6 +41,25 @@ async function searchAllByUser(id, token) {
   }
 }
 
+async function searchByProductName(name, token) {
+  try {
+    const response = await axios.get(
+      `${URL}/stock-movements/filter?ProductName=${name}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return await response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function recoverProduct(id, quantity, feePercentage, token) {
   const data = {
     quantity: quantity,
@@ -63,4 +82,4 @@ async function recoverProduct(id, quantity, feePercentage, token) {
   }
 }
 
-export { searchAll, searchAllByUser, recoverProduct };
+export { searchAll, searchAllByUser, recoverProduct, searchByProductName };

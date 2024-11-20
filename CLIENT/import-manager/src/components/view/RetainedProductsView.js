@@ -7,6 +7,7 @@ import {
   recoverProduct,
   searchAll,
   searchAllByUser,
+  searchByProductName,
 } from "../service/ProductService";
 import { useNavigate } from "react-router-dom";
 
@@ -49,31 +50,52 @@ const RetainedProductsView = () => {
   ]);
 
   async function render() {
-    if (user.role === "Admin") {
-      try {
-        const newList = await searchAll(user.doc, user.token);
+    if (search === "") {
+      if (user.role === "Admin") {
+        try {
+          const newList = await searchAll(user.doc, user.token);
 
-        if (newList) {
-          setList(newList);
-          console.log(newList);
+          if (newList) {
+            setList(newList);
+            console.log(newList);
+          }
+        } catch (error) {
+          alert(
+            "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!",
+            error
+          );
         }
-      } catch (error) {
-        alert(
-          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!",
-          error
-        );
+      }
+
+      if (user.role === "TaxPayer") {
+        try {
+          const newList = await searchAllByUser(user.doc, user.token);
+
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
 
-    if (user.role === "TaxPayer") {
+    if (search != "") {
       try {
-        const newList = await searchAllByUser(user.doc, user.token);
+        const newList = await searchByProductName(search, user.token);
 
         if (newList) {
           setList(newList);
         }
       } catch (error) {
-        console.log(error);
+        setList({
+          productName: "Não tem Produto com Esse Nome!",
+          quantity: 0,
+          feePercentage: 0,
+          totalPrice: 0,
+          description: "Digite o nome de um produto que exista!",
+          isFinalized: true,
+        });
       }
     }
   }
@@ -81,6 +103,11 @@ const RetainedProductsView = () => {
   useEffect(() => {
     render();
   }, []);
+
+  useEffect(() => {
+    setList(null);
+    render();
+  }, [search]);
 
   function playLeao() {
     if (audioRef.current) {
@@ -124,6 +151,10 @@ const RetainedProductsView = () => {
           size="large"
           placeholder="Buscar produto..."
           prefix={<SearchOutlined />}
+          value={search}
+          onChange={(event) => {
+            setSearch(event.target.value);
+          }}
         />
       </div>
 
