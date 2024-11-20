@@ -1,29 +1,70 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input } from "antd";
 import "../../styles/AlterView.css";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import { checkDocType } from "../../utils/Mascaras";
+import { alterById } from "../service/UserService";
 
 export default function AlterView() {
   const navigate = useNavigate();
   const [isCompany, setIsCompany] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, handleLogout } = useContext(AuthContext);
+  const [confirmaSenha, setConfirmaSenha] = useState("");
   const [newUser, setNewUser] = useState({
-    nome: user.name,
-    sobrenome: "",
-    senha: "",
-    confirmaSenha: "",
+    firstName: user.name,
+    lastName: "",
+    password: "",
     email: "",
     doc: user.doc,
+    role: user.role,
+    token: user.token,
+    id: user.id,
   });
 
-  const handleCheckboxChange = (e) => {
-    setIsCompany(e.target.checked);
-  };
+  // useEffect(() => {
+  //   console.log(newUser);
+  // }, [newUser]);
 
-  const handleSalvar = () => {};
+  const handleSalvar = async () => {
+    try {
+      if (
+        newUser.firstName === "" ||
+        newUser.lastName === "" ||
+        newUser.password === "" ||
+        newUser.email === "" ||
+        confirmaSenha === ""
+      ) {
+        alert("Todos os campos devem ser preenchidos!");
+        return;
+      }
+
+      if (confirmaSenha !== newUser.password) {
+        alert("As senhas devem ser iguais!");
+        return;
+      }
+
+      const userD = {
+        id: newUser.id,
+        token: newUser.token,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        password: newUser.password,
+        email: newUser.email,
+        role: newUser.role,
+      };
+
+      await alterById(userD);
+      alert("Dados alterados com sucesso, faça login novamente!");
+      handleLogout();
+      navigate("/");
+    } catch (error) {
+      alert(
+        "Erro ao alterar os dados, site do governo é assim mesmo, tenta amanhã!"
+      );
+    }
+  };
 
   return (
     <div className="register-container">
@@ -40,18 +81,18 @@ export default function AlterView() {
           size="middle"
           placeholder="Informe seu Nome"
           prefix={<UserOutlined />}
-          value={newUser.nome}
-          onChange={(n) => setNewUser({ ...newUser, nome: n.target.value })}
+          value={newUser.firstName}
+          onChange={(n) =>
+            setNewUser({ ...newUser, firstName: n.target.value })
+          }
         />
         <label>Sobrenome</label>
         <Input
           size="middle"
           placeholder="Informe seu Sobrenome"
           prefix={<UserOutlined />}
-          value={newUser.sobrenome}
-          onChange={(n) =>
-            setNewUser({ ...newUser, sobrenome: n.target.value })
-          }
+          value={newUser.lastName}
+          onChange={(n) => setNewUser({ ...newUser, lastName: n.target.value })}
         />
 
         <label>Senha</label>
@@ -59,18 +100,16 @@ export default function AlterView() {
           size="middle"
           placeholder="Crie uma Senha"
           prefix={<LockOutlined />}
-          value={newUser.senha}
-          onChange={(n) => setNewUser({ ...newUser, senha: n.target.value })}
+          value={newUser.password}
+          onChange={(n) => setNewUser({ ...newUser, password: n.target.value })}
         />
         <label>Confirme sua Senha</label>
         <Input.Password
           size="middle"
           placeholder="Confirme sua Senha"
           prefix={<LockOutlined />}
-          value={newUser.confirmaSenha}
-          onChange={(n) =>
-            setNewUser({ ...newUser, confirmaSenha: n.target.value })
-          }
+          value={confirmaSenha}
+          onChange={(n) => setConfirmaSenha(n.target.value)}
         />
 
         <label>Email</label>
@@ -91,7 +130,6 @@ export default function AlterView() {
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
               value={newUser.doc}
-              onChange={(n) => setNewUser({ ...newUser, doc: n.target.value })}
             />
           </>
         ) : (
@@ -103,7 +141,6 @@ export default function AlterView() {
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
               value={newUser.doc}
-              onChange={(n) => setNewUser({ ...newUser, doc: n.target.value })}
             />
           </>
         )}
@@ -117,6 +154,7 @@ export default function AlterView() {
           type="primary"
           size="large"
           style={{ backgroundColor: "#FFA500", borderColor: "#FFA500" }}
+          onClick={handleSalvar}
         >
           Salvar
         </Button>
