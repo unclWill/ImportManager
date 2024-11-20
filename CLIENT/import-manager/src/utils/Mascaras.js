@@ -12,4 +12,12 @@ function cleanDoc(cpf) {
   return cpf.replace(/\D/g, "");
 }
 
-export { isValidCNPJ, isValidCPF, cleanDoc };
+function checkDocType(doc) {
+  if (isValidCPF(doc)) {
+    return "cpf";
+  } else {
+    return "cnpj";
+  }
+}
+
+export { isValidCNPJ, isValidCPF, cleanDoc, checkDocType };

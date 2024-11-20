@@ -220,7 +220,8 @@ const RetainedProductsView = () => {
           right: "0.2vw",
         }}
         onClick={() => {
-          alert("Funcionalidade ainda não implementada pelo companheiro Taxad");
+          // alert("Funcionalidade ainda não implementada pelo companheiro Taxad");
+          navigate("/user/alterar");
         }}
       >
         Alterar Dados

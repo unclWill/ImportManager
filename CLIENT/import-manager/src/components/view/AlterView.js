@@ -1,17 +1,22 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input } from "antd";
 import "../../styles/AlterView.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthProvider";
+import { checkDocType } from "../../utils/Mascaras";
 
 export default function AlterView() {
+  const navigate = useNavigate();
   const [isCompany, setIsCompany] = useState(false);
+  const { user } = useContext(AuthContext);
   const [newUser, setNewUser] = useState({
-    nome: "",
+    nome: user.name,
     sobrenome: "",
     senha: "",
     confirmaSenha: "",
     email: "",
-    doc: "",
+    doc: user.doc,
   });
 
   const handleCheckboxChange = (e) => {
@@ -103,7 +108,9 @@ export default function AlterView() {
           </>
         )}
 
-        <Checkbox onChange={handleCheckboxChange}>Pessoa Jurídica</Checkbox>
+        <Checkbox checked={checkDocType(user.doc) === "cnpj" ? true : false}>
+          Pessoa Jurídica
+        </Checkbox>
       </div>
       <div className="buttons-alter">
         <Button
@@ -117,6 +124,9 @@ export default function AlterView() {
           type="primary"
           size="large"
           style={{ backgroundColor: "#FFA500", borderColor: "#FFA500" }}
+          onClick={() => {
+            navigate("/produtos/lista");
+          }}
         >
           Cancelar
         </Button>
