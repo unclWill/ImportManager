@@ -1,15 +1,21 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "../../styles/retainedProducts.css";
 import { Alert, Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { AuthContext } from "../context/AuthProvider";
-import { searchAll, searchAllByUser } from "../service/ProductService";
+import {
+  recoverProduct,
+  searchAll,
+  searchAllByUser,
+} from "../service/ProductService";
 import { useNavigate } from "react-router-dom";
 
 const RetainedProductsView = () => {
   const { user, handleLogout } = useContext(AuthContext);
   const [list, setList] = useState(null);
   const navigate = useNavigate();
+  const audioRef = useRef(null);
+  const [search, setSearch] = useState("");
 
   const [products, setProducts] = useState([
     {
@@ -73,12 +79,40 @@ const RetainedProductsView = () => {
   }
 
   useEffect(() => {
-    console.log(user.role);
     render();
   }, []);
 
+  function playLeao() {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  }
+
+  async function handleRecoverProduct(product) {
+    try {
+      const recovered = await recoverProduct(
+        product.id,
+        product.quantity,
+        product.feePercentage,
+        user.token
+      );
+
+      if (recovered.isFinalized === true) {
+        console.log(recovered.isFinalized);
+        alert(
+          "Produto recuperado com sucesso, aguarde 72 dias úteis para buscar seu produto em uma agência da Receita Federal. Em caso de dúvida confira https://www.gov.br/receitafederal/pt-br"
+        );
+        playLeao();
+        render();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="retained-products-view">
+      <audio ref={audioRef} src="/audio/leao.mp3" preload="auto" />
       <h3 className="user-info">
         {user && user.name}@{user && user.doc}
       </h3>
@@ -96,10 +130,7 @@ const RetainedProductsView = () => {
       <ul className="product-list">
         {list &&
           list.map((product) => (
-            <li
-              key={product.id}
-              className={`product-item ${product.isFinalized && "Liberado"}`}
-            >
+            <li key={product.id} className={`product-item`}>
               <h3>{product.productName}</h3>
               <p>
                 Valor a pagar: {product.totalPrice}{" "}
@@ -109,7 +140,14 @@ const RetainedProductsView = () => {
               </p>
               <p>Quantidade: {product.quantity}</p>
               <p>Descrição: {product.productDescription}</p>
-              {user.role === "TaxPayer" && (
+              <p
+                className={`status ${
+                  product.isFinalized ? "liberado" : "retido"
+                }`}
+              >
+                {product.isFinalized ? "Liberado" : "Retido"}
+              </p>
+              {user.role === "TaxPayer" && !product.isFinalized && (
                 <Button
                   type="primary"
                   size="small"
@@ -123,9 +161,7 @@ const RetainedProductsView = () => {
                     margin: "5px",
                   }}
                   onClick={() => {
-                    alert(
-                      "Funcionalidade ainda não implementada pelo companheiro Taxad"
-                    );
+                    handleRecoverProduct(product);
                   }}
                 >
                   Fazer o L

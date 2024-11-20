@@ -19,7 +19,7 @@ public static class StockMovementEndpoint
         group.MapGet("/{id}", GetByIdAsync);
         group.MapGet("/filter", GetWithFiltersAsync);
         group.MapPost("", PostAsync).RequireAuthorization("Admin");
-        group.MapPut("/{id}", PutAsync).RequireAuthorization("Admin");
+        group.MapPut("/{id}", PutAsync).RequireAuthorization("TaxPayer");
         group.MapDelete("/{id}", DeleteAsync).RequireAuthorization("Admin");
     }
 

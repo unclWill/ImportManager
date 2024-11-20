@@ -41,24 +41,21 @@ async function searchAllByUser(id, token) {
   }
 }
 
-async function recoverProduct(id, quantity) {
+async function recoverProduct(id, quantity, feePercentage, token) {
   const data = {
-    quantity: 0,
-    feePercentage: 0,
+    quantity: quantity,
+    feePercentage: feePercentage,
     isFinalized: true,
   };
 
   try {
-    const response = await axios.put(
-      `${URL}/stock-movements/filter?UserId=${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.put(`${URL}/stock-movements/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
 
     return await response.data;
   } catch (error) {
@@ -66,4 +63,4 @@ async function recoverProduct(id, quantity) {
   }
 }
 
-export { searchAll, searchAllByUser };
+export { searchAll, searchAllByUser, recoverProduct };

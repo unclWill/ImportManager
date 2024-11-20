@@ -20,7 +20,6 @@ export default function LoginView() {
     senha: "",
   });
   const { handleLogin } = useContext(AuthContext);
-  const audioRef = useRef(null);
 
   async function auth() {
     try {
@@ -53,15 +52,8 @@ export default function LoginView() {
     }
   }
 
-  // useEffect(() => {
-  //   if (audioRef.current) {
-  //     audioRef.current.play();
-  //   }
-  // }, []);
-
   return (
     <div className="container">
-      <audio ref={audioRef} src="/audio/leao.mp3" preload="auto" />
       <img src={"/leao.png"} alt="Logo InvestManager" className="logo-img" />
       <h1 className="title">Óh! Investimentos</h1>
       <div className="login-form">
