@@ -8,6 +8,7 @@ import {
   searchAll,
   searchAllByUser,
   searchByProductName,
+  searchByProductNamebyUserId,
 } from "../service/ProductService";
 import { useNavigate } from "react-router-dom";
 
@@ -85,29 +86,55 @@ const RetainedProductsView = () => {
     }
 
     if (search != "") {
-      try {
-        const newList = await searchByProductName(search, user.token);
+      if (user.role === "Admin") {
+        try {
+          const newList = await searchByProductName(search, user.token);
 
-        if (newList) {
-          setList(newList);
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          setList([
+            {
+              productName: "Não tem Produto com Esse Nome!",
+              quantity: 0,
+              feePercentage: 0,
+              totalPrice: 0,
+              description: "Digite o nome de um produto que exista!",
+              isFinalized: true,
+            },
+          ]);
         }
-      } catch (error) {
-        setList([
-          {
-            productName: "Não tem Produto com Esse Nome!",
-            quantity: 0,
-            feePercentage: 0,
-            totalPrice: 0,
-            description: "Digite o nome de um produto que exista!",
-            isFinalized: true,
-          },
-        ]);
+      } else {
+        try {
+          const newList = await searchByProductNamebyUserId(
+            search,
+            user.id,
+            user.token
+          );
+
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          setList([
+            {
+              productName: "Não tem Produto com Esse Nome!",
+              quantity: 0,
+              feePercentage: 0,
+              totalPrice: 0,
+              description: "Digite o nome de um produto que exista!",
+              isFinalized: true,
+            },
+          ]);
+        }
       }
     }
   }
 
   useEffect(() => {
     render();
+    console.log(list);
   }, []);
 
   useEffect(() => {
@@ -170,6 +197,9 @@ const RetainedProductsView = () => {
             <li key={product.id} className={`product-item`}>
               <h3>{product.productName}</h3>
               <p>
+                Evasor: {product.userName}@{product.taxPayerDocument}
+              </p>
+              <p>
                 Valor a pagar: {product.totalPrice}{" "}
                 <span style={{ fontSize: "0.9rem", color: "lightgrey" }}>
                   Taxad de {product.feePercentage}% aplicada
@@ -220,7 +250,6 @@ const RetainedProductsView = () => {
           right: "0.2vw",
         }}
         onClick={() => {
-          // alert("Funcionalidade ainda não implementada pelo companheiro Taxad");
           navigate("/user/alterar");
         }}
       >
