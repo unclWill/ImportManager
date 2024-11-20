@@ -72,7 +72,7 @@ export default function RegisterView() {
         alt="Logo InvestManager"
         className="logo-img-register"
       />
-      <h1 className="title-register">ImportManager</h1>
+      <h1 className="title-register">Estado Simulator</h1>
 
       <div className="register-form">
         <label>Nome</label>

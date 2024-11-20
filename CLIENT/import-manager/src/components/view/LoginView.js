@@ -55,7 +55,7 @@ export default function LoginView() {
   return (
     <div className="container">
       <img src={"/leao.png"} alt="Logo InvestManager" className="logo-img" />
-      <h1 className="title">Óh! Investimentos</h1>
+      <h1 className="title">Estado Simulator</h1>
       <div className="login-form">
         <label>Usuário</label>
         {isCompany ? (
