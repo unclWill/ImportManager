@@ -60,10 +60,14 @@ const RetainedProductsView = () => {
             console.log(newList);
           }
         } catch (error) {
-          alert(
-            "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!",
-            error
-          );
+          if (error.response && error.response.status === 404) {
+            return;
+          } else {
+            alert(
+              "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!",
+              error
+            );
+          }
         }
       }
 
@@ -88,14 +92,16 @@ const RetainedProductsView = () => {
           setList(newList);
         }
       } catch (error) {
-        setList({
-          productName: "Não tem Produto com Esse Nome!",
-          quantity: 0,
-          feePercentage: 0,
-          totalPrice: 0,
-          description: "Digite o nome de um produto que exista!",
-          isFinalized: true,
-        });
+        setList([
+          {
+            productName: "Não tem Produto com Esse Nome!",
+            quantity: 0,
+            feePercentage: 0,
+            totalPrice: 0,
+            description: "Digite o nome de um produto que exista!",
+            isFinalized: true,
+          },
+        ]);
       }
     }
   }
