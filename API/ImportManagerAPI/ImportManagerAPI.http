@@ -1,4 +1,4 @@
-@ImportManagerAPI_HostAddress = http://localhost:5000
+@ImportManagerAPI_HostAddress = http://localhost:8081
 
 GET {{ImportManagerAPI_HostAddress}}/weatherforecast/
 Accept: application/json

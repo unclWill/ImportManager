@@ -1,5 +1,5 @@
 const apiConfig = {
-    baseUrl: "http://localhost:5000",
+  baseUrl: "http://34.0.52.59:8081",
 };
 
 export default apiConfig;
