@@ -5,11 +5,11 @@ import "../../styles/StylesSplash.css";
 export default function Splash() {
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     navigate("/produtos/lista");
-  //   }, 4000);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("/produtos/lista");
+    }, 4000);
+  }, []);
 
   return (
     <div className="container-splash">
