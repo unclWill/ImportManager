@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Input } from "antd";
+import { Alert, Button, Checkbox, Input } from "antd";
 import "../../styles/StylesRegister.css";
 import { useState } from "react";
 import { registerService } from "../service/AuthService";
@@ -28,7 +28,7 @@ export default function RegisterView() {
     setIsCompany(e.target.checked);
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (
       newUser.firstName === "" ||
       newUser.lastName === "" ||
@@ -61,12 +61,12 @@ export default function RegisterView() {
       return;
     }
 
-    registerService(newUser);
-    alert("Usuário cadastrado com sucesso.");
-    navigate("/");
     try {
+      await registerService(newUser);
+      alert("Usuário cadastrado com sucesso.");
+      navigate("/");
     } catch (error) {
-      console.log(error.message);
+      alert(`${error.message}`);
     }
   };
 
