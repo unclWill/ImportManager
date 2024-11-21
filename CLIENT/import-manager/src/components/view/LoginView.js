@@ -5,7 +5,12 @@ import "../../styles/styles.css";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
-import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
+import {
+  applyCNPJMask,
+  applyCPFMask,
+  isValidCNPJ,
+  isValidCPF,
+} from "../../utils/Mascaras";
 //import ReactHowler from "react-howler";
 
 export default function LoginView() {
@@ -65,7 +70,7 @@ export default function LoginView() {
               size="large"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
-              value={newUser.doc}
+              value={applyCNPJMask(newUser.doc)}
               onChange={(t) => setNewUser({ ...newUser, doc: t.target.value })}
             />
           </>
@@ -76,7 +81,7 @@ export default function LoginView() {
               size="large"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
-              value={newUser.doc}
+              value={applyCPFMask(newUser.doc)}
               onChange={(t) => setNewUser({ ...newUser, doc: t.target.value })}
             />
           </>

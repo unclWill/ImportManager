@@ -3,7 +3,12 @@ import { Button, Checkbox, Input } from "antd";
 import "../../styles/StylesRegister.css";
 import { useState } from "react";
 import { registerService } from "../service/AuthService";
-import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
+import {
+  applyCNPJMask,
+  applyCPFMask,
+  isValidCNPJ,
+  isValidCPF,
+} from "../../utils/Mascaras";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterView() {
@@ -128,12 +133,11 @@ export default function RegisterView() {
               size="middle"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
-              value={newUser.taxPayerDocument}
+              value={applyCNPJMask(newUser.taxPayerDocument)}
               onChange={(n) =>
                 setNewUser({
                   ...newUser,
                   taxPayerDocument: n.target.value,
-                  role: "Admin",
                 })
               }
             />
@@ -146,12 +150,11 @@ export default function RegisterView() {
               size="middle"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
-              value={newUser.taxPayerDocument}
+              value={applyCPFMask(newUser.taxPayerDocument)}
               onChange={(n) =>
                 setNewUser({
                   ...newUser,
                   taxPayerDocument: n.target.value,
-                  role: "TaxPayer",
                 })
               }
             />

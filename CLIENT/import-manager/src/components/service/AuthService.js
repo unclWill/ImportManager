@@ -6,7 +6,7 @@ const URL = apiConfig.baseUrl;
 
 async function loginService(doc, senha) {
   const data = {
-    taxPayerDocument: `${doc}`,
+    taxPayerDocument: `${cleanDoc(doc)}`,
     password: `${senha}`,
   };
 
