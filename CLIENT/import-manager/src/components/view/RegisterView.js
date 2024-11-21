@@ -119,7 +119,7 @@ export default function RegisterView() {
         <label>Email</label>
         <Input
           size="middle"
-          placeholder="large size"
+          placeholder="Imforme seu email"
           prefix={<UserOutlined />}
           value={newUser.email}
           onChange={(n) => setNewUser({ ...newUser, email: n.target.value })}

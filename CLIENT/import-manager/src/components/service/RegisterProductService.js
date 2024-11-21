@@ -1,5 +1,6 @@
 import axios from "axios";
 import apiConfig from "../../config/apiConfig";
+import { parsePriceToDatabase } from "../../utils/Mascaras";
 
 const URL = apiConfig.baseUrl;
 
@@ -8,7 +9,7 @@ async function registerProductService(product, token) {
     Name: product.name,
     Description: product.description,
     Quantity: product.quantity,
-    Price: product.price,
+    Price: parsePriceToDatabase(product.price),
     Category: product.category,
     OwnerTaxPayerDocument: product.owner,
     feePercentage: product.feePercentage
@@ -25,21 +26,21 @@ async function registerProductService(product, token) {
 
     return await response.data;
   } catch (error) {
-    // Se o erro ocorreu, capture a mensagem do erro
+
     if (error.response) {
-      // O servidor respondeu com um status code que sai do intervalo de 2xx
+
       console.error("Erro na resposta do servidor:", error.response.data);
-      console.error(error); // Para depuração
+      console.error(error);
       throw new Error(
         error.response.data.message || "Erro ao cadastrar o produto."
       );
     } else if (error.request) {
-      // A requisição foi feita, mas não houve resposta
-      console.error("Erro na requisição:", error.request); // Para depuração
+
+      console.error("Erro na requisição:", error.request);
       throw new Error("Nenhuma resposta do servidor.");
     } else {
-      // Alguma coisa aconteceu na configuração da requisição que gerou um erro
-      console.error("Erro ao configurar a requisição:", error.message); // Para depuração
+
+      console.error("Erro ao configurar a requisição:", error.message);
       throw new Error("Erro ao cadastrar o produto.");
     }
   }

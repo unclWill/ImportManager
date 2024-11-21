@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "../../styles/retainedProducts.css";
-import { Alert, Button, Input } from "antd";
+import { Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { AuthContext } from "../context/AuthProvider";
 import {
@@ -10,6 +10,7 @@ import {
   searchByProductName,
   searchByProductNamebyUserId,
 } from "../service/ProductService";
+
 import { useNavigate } from "react-router-dom";
 
 const RetainedProductsView = () => {
@@ -19,36 +20,6 @@ const RetainedProductsView = () => {
   const audioRef = useRef(null);
   const [search, setSearch] = useState("");
 
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Produto A",
-      description: "Descrição do produto A",
-      quantity: 10,
-      status: "Retido",
-    },
-    {
-      id: 2,
-      name: "Produto B",
-      description: "Descrição do produto B",
-      quantity: 5,
-      status: "Liberado",
-    },
-    {
-      id: 3,
-      name: "Produto C",
-      description: "Descrição do produto C",
-      quantity: 20,
-      status: "Liberado",
-    },
-    {
-      id: 4,
-      name: "Produto D",
-      description: "Descrição do produto D",
-      quantity: 20,
-      status: "Retido",
-    },
-  ]);
 
   async function render() {
     if (search === "") {
@@ -58,7 +29,6 @@ const RetainedProductsView = () => {
 
           if (newList) {
             setList(newList);
-            console.log(newList);
           }
         } catch (error) {
           if (error.response && error.response.status === 404) {
@@ -208,9 +178,8 @@ const RetainedProductsView = () => {
               <p>Quantidade: {product.quantity}</p>
               <p>Descrição: {product.productDescription}</p>
               <p
-                className={`status ${
-                  product.isFinalized ? "liberado" : "retido"
-                }`}
+                className={`status ${product.isFinalized ? "liberado" : "retido"
+                  }`}
               >
                 {product.isFinalized ? "Liberado" : "Retido"}
               </p>

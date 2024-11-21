@@ -18,7 +18,16 @@ async function searchAll(doc, token) {
 
     return await response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.error("Erro na resposta do servidor:", error.response.data);
+      throw new Error(error.response.data.message || "Erro ao buscar todos os produtos");
+    } else if (error.request) {
+      console.error("Erro na requisição:", error.request);
+      throw new Error("Nenhuma resposta do servidor.");
+    } else {
+      console.error("Erro ao configurar a requisição:", error.message);
+      throw new Error("Erro ao buscar produtos.");
+    }
   }
 }
 
@@ -37,7 +46,16 @@ async function searchAllByUser(id, token) {
 
     return await response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.error("Erro na resposta do servidor:", error.response.data);
+      throw new Error(error.response.data.message || "Erro ao buscar produtos por usuario");
+    } else if (error.request) {
+      console.error("Erro na requisição:", error.request);
+      throw new Error("Nenhuma resposta do servidor.");
+    } else {
+      console.error("Erro ao configurar a requisição:", error.message);
+      throw new Error("Erro ao buscar produtos.");
+    }
   }
 }
 
@@ -56,7 +74,16 @@ async function searchByProductName(name, token) {
 
     return await response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.error("Erro na resposta do servidor:", error.response.data);
+      throw new Error(error.response.data.message || "Erro ao buscar produtos por nome");
+    } else if (error.request) {
+      console.error("Erro na requisição:", error.request);
+      throw new Error("Nenhuma resposta do servidor.");
+    } else {
+      console.error("Erro ao configurar a requisição:", error.message);
+      throw new Error("Erro ao buscar produtos.");
+    }
   }
 }
 
@@ -75,7 +102,16 @@ async function searchByProductNamebyUserId(name, id, token) {
 
     return await response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.error("Erro na resposta do servidor:", error.response.data);
+      throw new Error(error.response.data.message || "Erro ao buscar produtos por nome e id");
+    } else if (error.request) {
+      console.error("Erro na requisição:", error.request);
+      throw new Error("Nenhuma resposta do servidor.");
+    } else {
+      console.error("Erro ao configurar a requisição:", error.message);
+      throw new Error("Erro ao buscar produtos.");
+    }
   }
 }
 
@@ -97,7 +133,16 @@ async function recoverProduct(id, quantity, feePercentage, token) {
 
     return await response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.error("Erro na resposta do servidor:", error.response.data);
+      throw new Error(error.response.data.message || "Erro ao recuperar produtos");
+    } else if (error.request) {
+      console.error("Erro na requisição:", error.request);
+      throw new Error("Nenhuma resposta do servidor.");
+    } else {
+      console.error("Erro ao configurar a requisição:", error.message);
+      throw new Error("Erro ao recuperar produto.");
+    }
   }
 }
 

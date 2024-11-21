@@ -1,5 +1,4 @@
 import axios from "axios";
-import { cleanDoc } from "../../utils/Mascaras";
 import apiConfig from "../../config/apiConfig";
 
 const URL = apiConfig.baseUrl;
@@ -22,7 +21,16 @@ async function alterById(user) {
 
     return await response.data;
   } catch (error) {
-    throw error;
+    if (error.response) {
+      console.error("Erro na resposta do servidor:", error.response.data);
+      throw new Error(error.response.data.message || "Erro ao tentar alterar usuário");
+    } else if (error.request) {
+      console.error("Erro na requisição:", error.request);
+      throw new Error("Nenhuma resposta do servidor.");
+    } else {
+      console.error("Erro ao configurar a requisição:", error.message);
+      throw new Error("Erro ao tentar alterar usuário.");
+    }
   }
 }
 

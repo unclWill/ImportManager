@@ -115,7 +115,7 @@ export default function AlterView() {
         <label>Email</label>
         <Input
           size="middle"
-          placeholder="large size"
+          placeholder="Informe seu email"
           prefix={<UserOutlined />}
           value={newUser.email}
           onChange={(n) => setNewUser({ ...newUser, email: n.target.value })}
@@ -171,11 +171,5 @@ export default function AlterView() {
       </div>
     </div>
 
-    // Nome
-    // Sobrenome
-    // CPF
-    // Email
-    // Password
-    // Confirme Password
   );
 }

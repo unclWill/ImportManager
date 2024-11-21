@@ -45,6 +45,25 @@ function applyCNPJMask(cnpj) {
   );
 }
 
+function applyPriceMask(value) {
+  const numericValue = value.replace(/\D/g, "");
+  const formattedValue = numericValue
+    .replace(/(\d)(\d{2})$/, "$1,$2")
+    .replace(/(?=(\d{3})+(\D))\B/g, ".");
+  return `R$ ${formattedValue}`;
+}
+
+function parsePriceToDatabase(value) {
+  const numericValue = value
+    .replace("R$", "")
+    .replace(/\./g, "")
+    .replace(",", ".")
+    .trim();
+
+  return numericValue;
+}
+
+
 export {
   isValidCNPJ,
   isValidCPF,
@@ -52,4 +71,6 @@ export {
   checkDocType,
   applyCPFMask,
   applyCNPJMask,
+  applyPriceMask,
+  parsePriceToDatabase
 };

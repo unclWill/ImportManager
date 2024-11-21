@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/registerRetainedProduct.css";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext } from "react";
+import { applyPriceMask } from "../../utils/Mascaras";
 
 export default function RegisterRetainedProduct() {
   const { user, handleLogout } = useContext(AuthContext);
@@ -43,7 +44,7 @@ export default function RegisterRetainedProduct() {
       !newProduct.quantity ||
       !newProduct.price ||
       !newProduct.category ||
-      !newProduct.owner || 
+      !newProduct.owner ||
       !newProduct.feePercentage
     ) {
       alert("Todos os campos devem ser preenchidos!");
@@ -119,10 +120,10 @@ export default function RegisterRetainedProduct() {
           name="price"
           placeholder="Preço"
           prefix={<PlusOutlined />}
-          value={newProduct.price}
+          value={applyPriceMask(newProduct.price)}
           onChange={handleInputChange}
         />
-         <label>Taxa aplicada sobre o produto</label>
+        <label>Taxa aplicada sobre o produto</label>
         <Input
           className="input"
           size="large"
@@ -143,6 +144,9 @@ export default function RegisterRetainedProduct() {
             <Select.Option value=""></Select.Option>
             <Select.Option value="Eletronicos">Eletrônicos</Select.Option>
             <Select.Option value="Vestuario">Vestuário</Select.Option>
+            <Select.Option value="Linha Branca">Linha Branca</Select.Option>
+
+
           </Select>
         </Form.Item>
         <label>Proprietário do Produto</label>
