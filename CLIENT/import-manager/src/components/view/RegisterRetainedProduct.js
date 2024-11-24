@@ -1,4 +1,5 @@
 import { CheckSquareFilled, PlusOutlined } from "@ant-design/icons";
+import { CiViewList } from "react-icons/ci";
 import { Button, Form, Input, Select } from "antd";
 import React, { useMemo, useState } from "react";
 import { registerProductService } from "../service/RegisterProductService";
@@ -6,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/registerRetainedProduct.css";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext } from "react";
-import { applyPriceMask } from "../../utils/Mascaras";
 
 export default function RegisterRetainedProduct() {
   const { user, handleLogout } = useContext(AuthContext);
@@ -82,7 +82,7 @@ export default function RegisterRetainedProduct() {
           size="large"
           name="name"
           placeholder="Digite o nome do produto"
-          prefix={<CheckSquareFilled />}
+          prefix={<CiViewList />}
           value={newProduct.name}
           onChange={handleInputChange}
         />
@@ -120,7 +120,7 @@ export default function RegisterRetainedProduct() {
           name="price"
           placeholder="Preço"
           prefix={<PlusOutlined />}
-          value={applyPriceMask(newProduct.price)}
+          value={newProduct.price}
           onChange={handleInputChange}
         />
         <label>Taxa aplicada sobre o produto</label>
@@ -144,9 +144,6 @@ export default function RegisterRetainedProduct() {
             <Select.Option value=""></Select.Option>
             <Select.Option value="Eletronicos">Eletrônicos</Select.Option>
             <Select.Option value="Vestuario">Vestuário</Select.Option>
-            <Select.Option value="Linha Branca">Linha Branca</Select.Option>
-
-
           </Select>
         </Form.Item>
         <label>Proprietário do Produto</label>

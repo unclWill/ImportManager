@@ -20,7 +20,6 @@ const RetainedProductsView = () => {
   const audioRef = useRef(null);
   const [search, setSearch] = useState("");
 
-
   async function render() {
     if (search === "") {
       if (user.role === "Admin") {
@@ -178,8 +177,9 @@ const RetainedProductsView = () => {
               <p>Quantidade: {product.quantity}</p>
               <p>Descrição: {product.productDescription}</p>
               <p
-                className={`status ${product.isFinalized ? "liberado" : "retido"
-                  }`}
+                className={`status ${
+                  product.isFinalized ? "liberado" : "retido"
+                }`}
               >
                 {product.isFinalized ? "Liberado" : "Retido"}
               </p>
@@ -217,6 +217,7 @@ const RetainedProductsView = () => {
           position: "absolute",
           top: "5vw",
           right: "0.2vw",
+          width: "10vw",
         }}
         onClick={() => {
           navigate("/user/alterar");
@@ -236,12 +237,13 @@ const RetainedProductsView = () => {
             position: "absolute",
             top: "9vw",
             right: "0.2vw",
+            width: "10vw",
           }}
           onClick={() => {
             navigate("/produtos/cadastro");
           }}
         >
-          Roubar Produto do Cidadão
+          Reter Produto
         </Button>
       )}
 

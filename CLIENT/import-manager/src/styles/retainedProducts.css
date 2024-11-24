@@ -66,6 +66,10 @@ body {
 }
 
 .product-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   background-color: #fff;
   margin-bottom: 5vh;
   padding: 1vh 0;
@@ -97,6 +101,7 @@ body {
   font-weight: bold;
   padding: 0.5vh 1vw;
   border-radius: 1vw;
+  width: 5vw;
 }
 
 .status.retido {
