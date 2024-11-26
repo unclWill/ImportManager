@@ -3,8 +3,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
   gap: 10px;
   background-color: #1351b4;
 }
@@ -50,10 +48,11 @@
 .register-product-buttons-cadastro {
   display: flex;
   justify-content: center;
+  flex-direction: row;
 }
 
 .product-register-select {
-  min-width: 35vw;
+  //min-width: 35vw;
   height: 50px;
   margin-top: 10px;
 }

@@ -5,8 +5,13 @@ import "../../styles/styles.css";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
-import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
-import ReactHowler from "react-howler";
+import {
+  applyCNPJMask,
+  applyCPFMask,
+  isValidCNPJ,
+  isValidCPF,
+} from "../../utils/Mascaras";
+//import ReactHowler from "react-howler";
 
 export default function LoginView() {
   const [playing, setPlaying] = useState(false);
@@ -20,7 +25,6 @@ export default function LoginView() {
     senha: "",
   });
   const { handleLogin } = useContext(AuthContext);
-  const audioRef = useRef(null);
 
   async function auth() {
     try {
@@ -53,17 +57,10 @@ export default function LoginView() {
     }
   }
 
-  // useEffect(() => {
-  //   if (audioRef.current) {
-  //     audioRef.current.play();
-  //   }
-  // }, []);
-
   return (
     <div className="container">
-      <audio ref={audioRef} src="/audio/leao.mp3" preload="auto" />
       <img src={"/leao.png"} alt="Logo InvestManager" className="logo-img" />
-      <h1 className="title">Óh! Investimentos</h1>
+      <h1 className="title">Estado Simulator</h1>
       <div className="login-form">
         <label>Usuário</label>
         {isCompany ? (
@@ -73,7 +70,7 @@ export default function LoginView() {
               size="large"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
-              value={newUser.doc}
+              value={applyCNPJMask(newUser.doc)}
               onChange={(t) => setNewUser({ ...newUser, doc: t.target.value })}
             />
           </>
@@ -84,7 +81,7 @@ export default function LoginView() {
               size="large"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
-              value={newUser.doc}
+              value={applyCPFMask(newUser.doc)}
               onChange={(t) => setNewUser({ ...newUser, doc: t.target.value })}
             />
           </>

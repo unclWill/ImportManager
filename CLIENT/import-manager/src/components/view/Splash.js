@@ -14,7 +14,7 @@ export default function Splash() {
   return (
     <div className="container-splash">
       <img src="/gif/leao.gif" alt="leão da receita correndo" />
-      <h1>Em Construção</h1>
+      <h1>Olha o passado e projeta o futuro!</h1>
     </div>
   );
 }

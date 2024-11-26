@@ -1,82 +1,147 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "../../styles/retainedProducts.css";
-import { Alert, Button, Input } from "antd";
+import { Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { AuthContext } from "../context/AuthProvider";
-import { searchAll, searchAllByUser } from "../service/ProductService";
+import {
+  recoverProduct,
+  searchAll,
+  searchAllByUser,
+  searchByProductName,
+  searchByProductNamebyUserId,
+} from "../service/ProductService";
+
 import { useNavigate } from "react-router-dom";
 
 const RetainedProductsView = () => {
   const { user, handleLogout } = useContext(AuthContext);
   const [list, setList] = useState(null);
   const navigate = useNavigate();
-
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Produto A",
-      description: "Descrição do produto A",
-      quantity: 10,
-      status: "Retido",
-    },
-    {
-      id: 2,
-      name: "Produto B",
-      description: "Descrição do produto B",
-      quantity: 5,
-      status: "Liberado",
-    },
-    {
-      id: 3,
-      name: "Produto C",
-      description: "Descrição do produto C",
-      quantity: 20,
-      status: "Liberado",
-    },
-    {
-      id: 4,
-      name: "Produto D",
-      description: "Descrição do produto D",
-      quantity: 20,
-      status: "Retido",
-    },
-  ]);
+  const audioRef = useRef(null);
+  const [search, setSearch] = useState("");
 
   async function render() {
-    if (user.role === "Admin") {
-      try {
-        const newList = await searchAll(user.doc, user.token);
+    if (search === "") {
+      if (user.role === "Admin") {
+        try {
+          const newList = await searchAll(user.doc, user.token);
 
-        if (newList) {
-          setList(newList);
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            return;
+          } else {
+            alert(
+              "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!",
+              error
+            );
+          }
         }
-      } catch (error) {
-        alert(
-          "Erro ao recuperar informações sobre os produtos retidos, conforme o artigo 762 do código da lei numero 220020 de 1992, todos os valores e demais produtos em posse do cidadão devem ser retidos, em virtude da dúvida!"
-        );
+      }
+
+      if (user.role === "TaxPayer") {
+        try {
+          const newList = await searchAllByUser(user.doc, user.token);
+
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
 
-    if (user.role === "TaxPayer") {
-      try {
-        const newList = await searchAllByUser(user.id);
+    if (search != "") {
+      if (user.role === "Admin") {
+        try {
+          const newList = await searchByProductName(search, user.token);
 
-        if (newList) {
-          setList(newList);
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          setList([
+            {
+              productName: "Não tem Produto com Esse Nome!",
+              quantity: 0,
+              feePercentage: 0,
+              totalPrice: 0,
+              description: "Digite o nome de um produto que exista!",
+              isFinalized: true,
+            },
+          ]);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        try {
+          const newList = await searchByProductNamebyUserId(
+            search,
+            user.id,
+            user.token
+          );
+
+          if (newList) {
+            setList(newList);
+          }
+        } catch (error) {
+          setList([
+            {
+              productName: "Não tem Produto com Esse Nome!",
+              quantity: 0,
+              feePercentage: 0,
+              totalPrice: 0,
+              description: "Digite o nome de um produto que exista!",
+              isFinalized: true,
+            },
+          ]);
+        }
       }
     }
   }
 
   useEffect(() => {
-    console.log(user.role);
     render();
+    console.log(list);
   }, []);
+
+  useEffect(() => {
+    setList(null);
+    render();
+  }, [search]);
+
+  function playLeao() {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  }
+
+  async function handleRecoverProduct(product) {
+    try {
+      const recovered = await recoverProduct(
+        product.id,
+        product.quantity,
+        product.feePercentage,
+        user.token
+      );
+
+      if (recovered.isFinalized === true) {
+        console.log(recovered.isFinalized);
+        alert(
+          "Produto recuperado com sucesso, aguarde 72 dias úteis para buscar seu produto em uma agência da Receita Federal. Em caso de dúvida confira https://www.gov.br/receitafederal/pt-br"
+        );
+        playLeao();
+        render();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="retained-products-view">
+      <audio ref={audioRef} src="/audio/leao.mp3" preload="auto" />
       <h3 className="user-info">
         {user && user.name}@{user && user.doc}
       </h3>
@@ -88,20 +153,37 @@ const RetainedProductsView = () => {
           size="large"
           placeholder="Buscar produto..."
           prefix={<SearchOutlined />}
+          value={search}
+          onChange={(event) => {
+            setSearch(event.target.value);
+          }}
         />
       </div>
 
       <ul className="product-list">
         {list &&
           list.map((product) => (
-            <li
-              key={product.id}
-              className={`product-item ${product.isFinalized && "Liberado"}`}
-            >
+            <li key={product.id} className={`product-item`}>
               <h3>{product.productName}</h3>
-              <p>Valor a pagar: {product.totalPrice}</p>
+              <p>
+                Evasor: {product.userName}@{product.taxPayerDocument}
+              </p>
+              <p>
+                Valor a pagar: {product.totalPrice}{" "}
+                <span style={{ fontSize: "0.9rem", color: "lightgrey" }}>
+                  Taxad de {product.feePercentage}% aplicada
+                </span>
+              </p>
               <p>Quantidade: {product.quantity}</p>
-              {user.role === "TaxPayer" && (
+              <p>Descrição: {product.productDescription}</p>
+              <p
+                className={`status ${
+                  product.isFinalized ? "liberado" : "retido"
+                }`}
+              >
+                {product.isFinalized ? "Liberado" : "Retido"}
+              </p>
+              {user.role === "TaxPayer" && !product.isFinalized && (
                 <Button
                   type="primary"
                   size="small"
@@ -115,9 +197,7 @@ const RetainedProductsView = () => {
                     margin: "5px",
                   }}
                   onClick={() => {
-                    alert(
-                      "Funcionalidade ainda não implementada pelo companheiro Taxad"
-                    );
+                    handleRecoverProduct(product);
                   }}
                 >
                   Fazer o L
@@ -137,9 +217,10 @@ const RetainedProductsView = () => {
           position: "absolute",
           top: "5vw",
           right: "0.2vw",
+          width: "10vw",
         }}
         onClick={() => {
-          alert("Funcionalidade ainda não implementada pelo companheiro Taxad");
+          navigate("/user/alterar");
         }}
       >
         Alterar Dados
@@ -156,12 +237,13 @@ const RetainedProductsView = () => {
             position: "absolute",
             top: "9vw",
             right: "0.2vw",
+            width: "10vw",
           }}
           onClick={() => {
             navigate("/produtos/cadastro");
           }}
         >
-          Roubar Produto do Cidadão
+          Reter Produto
         </Button>
       )}
 

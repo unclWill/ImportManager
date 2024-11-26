@@ -21,6 +21,9 @@ public class Product
     [Column(TypeName = "decimal(18,2)")] 
     public decimal Price { get; set; }
 
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal? FeePercentage { get; set; } = 0;
+    
     [MaxLength(16)]
     public string OwnerTaxPayerDocument { get; set; } 
     

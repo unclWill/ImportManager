@@ -1,9 +1,14 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Input } from "antd";
+import { Alert, Button, Checkbox, Input } from "antd";
 import "../../styles/StylesRegister.css";
 import { useState } from "react";
 import { registerService } from "../service/AuthService";
-import { isValidCNPJ, isValidCPF } from "../../utils/Mascaras";
+import {
+  applyCNPJMask,
+  applyCPFMask,
+  isValidCNPJ,
+  isValidCPF,
+} from "../../utils/Mascaras";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterView() {
@@ -23,7 +28,7 @@ export default function RegisterView() {
     setIsCompany(e.target.checked);
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (
       newUser.firstName === "" ||
       newUser.lastName === "" ||
@@ -56,12 +61,12 @@ export default function RegisterView() {
       return;
     }
 
-    registerService(newUser);
-    alert("Usuário cadastrado com sucesso.");
-    navigate("/");
     try {
+      await registerService(newUser);
+      alert("Usuário cadastrado com sucesso.");
+      navigate("/");
     } catch (error) {
-      console.log(error.message);
+      alert(`${error.message}`);
     }
   };
 
@@ -72,7 +77,7 @@ export default function RegisterView() {
         alt="Logo InvestManager"
         className="logo-img-register"
       />
-      <h1 className="title-register">ImportManager</h1>
+      <h1 className="title-register">Estado Simulator</h1>
 
       <div className="register-form">
         <label>Nome</label>
@@ -114,7 +119,7 @@ export default function RegisterView() {
         <label>Email</label>
         <Input
           size="middle"
-          placeholder="large size"
+          placeholder="Imforme seu email"
           prefix={<UserOutlined />}
           value={newUser.email}
           onChange={(n) => setNewUser({ ...newUser, email: n.target.value })}
@@ -128,12 +133,11 @@ export default function RegisterView() {
               size="middle"
               placeholder="Informe o CNPJ"
               prefix={<UserOutlined />}
-              value={newUser.taxPayerDocument}
+              value={applyCNPJMask(newUser.taxPayerDocument)}
               onChange={(n) =>
                 setNewUser({
                   ...newUser,
                   taxPayerDocument: n.target.value,
-                  role: "Admin",
                 })
               }
             />
@@ -146,12 +150,11 @@ export default function RegisterView() {
               size="middle"
               placeholder="Informe o CPF"
               prefix={<UserOutlined />}
-              value={newUser.taxPayerDocument}
+              value={applyCPFMask(newUser.taxPayerDocument)}
               onChange={(n) =>
                 setNewUser({
                   ...newUser,
                   taxPayerDocument: n.target.value,
-                  role: "TaxPayer",
                 })
               }
             />

@@ -19,7 +19,7 @@ public static class StockMovementEndpoint
         group.MapGet("/{id}", GetByIdAsync);
         group.MapGet("/filter", GetWithFiltersAsync);
         group.MapPost("", PostAsync).RequireAuthorization("Admin");
-        group.MapPut("/{id}", PutAsync).RequireAuthorization("Admin");
+        group.MapPut("/{id}", PutAsync).RequireAuthorization("TaxPayer");
         group.MapDelete("/{id}", DeleteAsync).RequireAuthorization("Admin");
     }
 
@@ -84,19 +84,14 @@ public static class StockMovementEndpoint
                 .Include(m => m.User)
                 .AsQueryable();
 
-            if (filter.StartDate.HasValue)
-            {
-                query = query.Where(m => m.MovementDate >= filter.StartDate.Value);
-            }
-
-            if (filter.EndDate.HasValue)
-            {
-                query = query.Where(m => m.MovementDate <= filter.EndDate.Value);
-            }
-
             if (filter.ProductId.HasValue)
             {
                 query = query.Where(m => m.ProductId == filter.ProductId.Value);
+            }
+
+            if (!string.IsNullOrEmpty(filter.ProductName))
+            {
+                query = query.Where(m => m.Product.Name.Contains(filter.ProductName));
             }
 
             if (filter.UserId.HasValue)
@@ -107,6 +102,16 @@ public static class StockMovementEndpoint
             if (filter.MovementType.HasValue)
             {
                 query = query.Where(m => m.MovementType == filter.MovementType.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.TaxPayerDocument))
+            {
+                query = query.Where(m => m.TaxPayerDocument == filter.TaxPayerDocument);
+            }
+
+            if (filter.IsFinalized.HasValue)
+            {
+                query = query.Where(m => m.IsFinalized == filter.IsFinalized.Value);
             }
 
             var movements = await query
@@ -160,12 +165,21 @@ public static class StockMovementEndpoint
                 return TypedResults.NotFound($"Usuário não encontrado.");
             }
 
+            decimal feePercentage = 0;
+            decimal unitPrice = 0;
+
             if (createDto.MovementType == MovementType.Entrada)
             {
                 if (!createDto.UnitPrice.HasValue || createDto.UnitPrice.Value <= 0)
                 {
                     return TypedResults.BadRequest("Preço unitário é obrigatório para movimentações de entrada.");
                 }
+
+                unitPrice = createDto.UnitPrice.Value;
+                feePercentage = (decimal)(createDto.FeePercentage ?? 0);
+
+                product.Price = unitPrice;
+                product.FeePercentage = feePercentage;
             }
             else
             {
@@ -174,20 +188,24 @@ public static class StockMovementEndpoint
                     return TypedResults.BadRequest("Taxa percentual é obrigatória para movimentações de saída.");
                 }
 
-                // if (product.Quantity < createDto.Quantity)
-                // {
-                //     return TypedResults.BadRequest("Quantidade insuficiente em estoque.");
-                // }
+                if (product.Quantity < createDto.Quantity)
+                {
+                    return TypedResults.BadRequest("Quantidade insuficiente em estoque.");
+                }
+
+                unitPrice = product.Price;
+                feePercentage = (decimal)createDto.FeePercentage.Value;
             }
 
             var movement = mapper.Map<StockMovimentation>(createDto);
             movement.UserId = userId;
             movement.TaxPayerDocument = product.OwnerTaxPayerDocument;
             movement.MovementDate = DateTime.Now;
+            movement.FeePercentage = feePercentage;
 
-            movement.TotalPrice = createDto.MovementType == MovementType.Entrada
-                ? createDto.Quantity * createDto.UnitPrice.Value
-                : (decimal)((double)product.Price * createDto.Quantity * (1 + createDto.FeePercentage.Value / 100.0));
+            decimal baseTotal = unitPrice * createDto.Quantity;
+            decimal taxAmount = baseTotal * (feePercentage / 100m);
+            movement.TotalPrice = baseTotal + taxAmount;
 
             if (createDto.MovementType == MovementType.Entrada)
             {
@@ -221,6 +239,7 @@ public static class StockMovementEndpoint
     private static async Task<IResult> PutAsync(
         long id,
         [FromBody] StockMovementUpdateDto updateDto,
+        HttpContext httpContext,
         ImportManagerContext db,
         IMapper mapper)
     {
@@ -236,59 +255,40 @@ public static class StockMovementEndpoint
                 return TypedResults.BadRequest("Dados da movimentação inválidos.");
             }
 
-            var movement = await db.StockMovimentations
+            var existingMovement = await db.StockMovimentations
                 .Include(m => m.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movement == null)
+            if (existingMovement == null)
             {
                 return TypedResults.NotFound("Movimentação não encontrada.");
             }
 
-            if (movement.IsFinalized)
-            {
-                return TypedResults.BadRequest("Não é possível alterar uma movimentação já finalizada.");
-            }
+            var product = existingMovement.Product;
 
-            if (updateDto.IsFinalized.HasValue)
-            {
-                if (movement.MovementType == MovementType.Entrada && updateDto.IsFinalized.Value)
-                {
-                    return TypedResults.BadRequest("Não é possível finalizar movimentações de entrada.");
-                }
+            // Decrementa a quantidade do produto na tabela de produtos. Habilitar apenas se for necessário.
+            // if (updateDto.Quantity > product.Quantity)
+            // {
+            //     return TypedResults.BadRequest("Quantidade insuficiente em estoque.");
+            // }
 
-                if (movement.MovementType == MovementType.Saida)
-                {
-                    movement.IsFinalized = updateDto.IsFinalized.Value;
-                }
-            }
+            decimal? feePercentage = updateDto.FeePercentage ?? product.FeePercentage;
+            decimal? feeValue = product.Price * updateDto.Quantity * (feePercentage / 100m);
+            decimal? totalPrice = (product.Price * updateDto.Quantity) + feeValue;
 
-            if (movement.MovementType == MovementType.Entrada)
-            {
-                movement.Product.Quantity -= movement.Quantity;
-            }
-            else
-            {
-                movement.Product.Quantity += movement.Quantity;
-            }
+            existingMovement.Quantity = updateDto.Quantity;
+            existingMovement.FeePercentage = feePercentage;
+            existingMovement.MovementType = MovementType.Saida;
+            existingMovement.MovementDate = DateTime.Now;
+            existingMovement.TotalPrice = (decimal)totalPrice;
+            existingMovement.FeeValue = feeValue;
+            existingMovement.IsFinalized = updateDto.IsFinalized ?? true;
+            existingMovement.UserId = long.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            movement.Quantity = updateDto.Quantity;
-            movement.TotalPrice = updateDto.TotalPrice;
-
-            if (movement.MovementType == MovementType.Entrada)
-            {
-                movement.Product.Quantity += movement.Quantity;
-            }
-            else
-            {
-                if (movement.Product.Quantity < movement.Quantity)
-                    return TypedResults.BadRequest("Quantidade insuficiente em estoque.");
-                movement.Product.Quantity -= movement.Quantity;
-            }
-
+            product.Quantity -= updateDto.Quantity;
             await db.SaveChangesAsync();
 
-            return Results.Ok(mapper.Map<StockMovementResponseDto>(movement));
+            return Results.Ok(mapper.Map<StockMovementResponseDto>(existingMovement));
         }
         catch (Exception)
         {
